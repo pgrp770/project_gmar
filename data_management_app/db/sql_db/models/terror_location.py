@@ -11,6 +11,6 @@ class TerrorLocation(Base):
     longitude = Column(Float)
 
     city_id = Column(Integer, ForeignKey('cities.id'))
-    city = relationship('City', backref='regions')
+    city = relationship('City', back_populates='terror_locations')
 
-    terror_attacks = relationship('TerrorAttackWeapon', back_populates='terror_location')
+    terror_attacks = relationship('TerrorAttackTerrorLocation', back_populates='terror_location')
