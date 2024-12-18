@@ -45,7 +45,7 @@ def map_id(df: pd.DataFrame, key: str, object_name: str) -> Dict[List, int]:
 
 def add_id_column_to_table_with_map(df: pd.DataFrame, map_ids: Dict, key: str, object_name: str) -> pd.DataFrame:
     def get_id(row):
-        return map_ids[row[key]]
+        return map_ids.get(row[key], None)
 
     df[f"{object_name}_id"] = df.apply(get_id, axis=1)
     return df

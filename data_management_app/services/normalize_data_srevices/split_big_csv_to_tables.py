@@ -135,3 +135,11 @@ def normalize_group_table(df: DataFrame) -> DataFrame:
 def apply_city_id_on_main_csv(df: DataFrame, cities: DataFrame) -> DataFrame:
     map_id_cities = map_id(cities, "city", "city")
     return add_id_column_to_table_with_map(df, map_id_cities, "city", "city")
+
+def apply_groups_id_on_main_csv(df: DataFrame, groups: DataFrame) -> DataFrame:
+    map_id_groups = map_id(groups, "group_name", "group")
+    return tz.pipe(
+        add_id_column_to_table_with_map(df, map_id_groups, "gname", "group1"),
+        lambda x: add_id_column_to_table_with_map(x, map_id_groups, "gname2", "group2"),
+        lambda x: add_id_column_to_table_with_map(x, map_id_groups, "gname3", "group3"),
+    )

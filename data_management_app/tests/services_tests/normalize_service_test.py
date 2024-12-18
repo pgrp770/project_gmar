@@ -1,7 +1,7 @@
 import pytest
 
-from config.root_dir import CSV_DATA
-from data_management_app.services.normalize_data_srevices.normalize_main_csv_service import *
+from config.root_dir import CSV_DATA_MAIN_TABLE
+from data_management_app.services.normalize_data_srevices.split_big_csv_to_tables import *
 from data_management_app.utils.pandas_utils import *
 
 
@@ -84,17 +84,22 @@ def clean_table():
         "nkill",
         "nwound",
     ]
-    return flow_first_normalize(CSV_DATA)
+    return flow_first_normalize(CSV_DATA_MAIN_TABLE)
 
 
 @pytest.fixture(scope='module')
 def cities(clean_table):
     return normalize_city_table(clean_table)
 
+@pytest.fixture(scope='module')
+def groups(clean_table):
+    return normalize_group_table(clean_table)
 
 @pytest.fixture(scope='module')
 def clean_table_with_city_ids(clean_table, cities):
     return apply_city_id_on_main_csv(clean_table, cities)
+
+
 
 
 def test_normalize_region_table(clean_table):
@@ -115,10 +120,6 @@ def test_normalize_data(clean_table):
     assert len(result.columns.tolist()) == 3
 
 
-def test_apply_city_id_on_main_csv(clean_table, cities):
-    result = apply_city_id_on_main_csv(clean_table, cities)
-    print(result)
-    assert "city_id" in result.columns.tolist()
 
 
 def test_normalize_terror_location(clean_table_with_city_ids):
@@ -153,3 +154,13 @@ def test_normalize_group_table(clean_table):
     result = normalize_group_table(clean_table)
     print(result)
     assert len(result.columns.tolist()) == 2
+
+def test_apply_city_id_on_main_csv(clean_table, cities):
+    result = apply_city_id_on_main_csv(clean_table, cities)
+    print(result)
+    assert "city_id" in result.columns.tolist()
+
+def test_apply_groups_id_on_main_csv(clean_table, groups):
+    result = apply_groups_id_on_main_csv(clean_table, groups)
+    print(result)
+    assert all(g_id in result.columns.tolist() for g_id in ["group1_id", "group2_id", "group3_id"])
