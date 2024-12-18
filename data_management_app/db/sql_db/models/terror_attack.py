@@ -21,8 +21,7 @@ class TerrorAttack(Base):
 
     target_types = relationship('TerrorAttackTargetType', back_populates='terror_attacks')
 
-    attack_types = relationship('TerrorAttackAttackType', back_populates='terror_attacks')
-
+    attack_types = relationship('TerrorAttackAttackType',back_populates='terror_attacks')
     weapons = relationship('TerrorAttackWeapon', back_populates='terror_attacks')
 
     terror_locations = relationship('TerrorAttackTerrorLocation', back_populates='terror_attacks')

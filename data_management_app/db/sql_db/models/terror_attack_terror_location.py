@@ -9,7 +9,7 @@ class TerrorAttackTerrorLocation(Base):
     id = Column(Integer, primary_key=True)
 
     terror_location_id = Column(Integer, ForeignKey('terror_locations.id'))
-    terror_location_type = relationship('TerrorLocation', back_populates='terror_attacks')
+    terror_location = relationship('TerrorLocation', back_populates='terror_attacks')
 
     terror_attack_id = Column(Integer, ForeignKey('terror_attacks.id'))
-    terror_attacks = relationship('TerrorAttack', back_populates='weapons')
+    terror_attacks = relationship('TerrorAttack', back_populates='terror_locations')

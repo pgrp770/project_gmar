@@ -9,5 +9,4 @@ class Nationality(Base):
     id = Column(Integer, primary_key=True)
     nationality = Column(String)
 
-    terror_attacks = relationship('TerrorAttackNationality', backref='nationality')
-    # countries = relationship('Country', back_populates='region')
+    terror_attacks = relationship('TerrorAttackNationality', back_populates='nationality')

@@ -9,7 +9,7 @@ class City(Base):
     id = Column(Integer, primary_key=True)
     city_name = Column(String)
 
+
     country_id = Column(Integer, ForeignKey('countries.id'))
     country = relationship('Country', back_populates='cities')
-
     terror_locations = relationship('TerrorLocation', back_populates='city')

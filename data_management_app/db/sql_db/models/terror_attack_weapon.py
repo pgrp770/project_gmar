@@ -9,9 +9,8 @@ class TerrorAttackWeapon(Base):
     id = Column(Integer, primary_key=True)
 
     weapon_id = Column(Integer, ForeignKey('weapons.id'))
-    weapon_type = relationship('Weapon', back_populates='terror_attacks')
+    weapon = relationship('Weapon', back_populates='terror_attacks')
 
     terror_attack_id = Column(Integer, ForeignKey('terror_attacks.id'))
     terror_attacks = relationship('TerrorAttack', back_populates='weapons')
 
-    # countries = relationship('Country', back_populates='region')
