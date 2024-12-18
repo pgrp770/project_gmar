@@ -77,3 +77,9 @@ def combine_columns(df, columns, new_column_name):
 def create_ids(df: pd.DataFrame, object_name: str) -> pd.DataFrame:
     df[f'{object_name}_id'] = range(1, len(df) + 1)
     return df
+
+
+def retype_column(df: pd.DataFrame, column_name: str, target_type: type, fill_value=0) -> pd.DataFrame:
+
+    df[column_name] = df[column_name].fillna(fill_value).apply(lambda x: target_type(x))
+    return df

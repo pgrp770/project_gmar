@@ -7,7 +7,7 @@ from data_management_app.utils.pandas_utils import *
 
 @pytest.fixture(scope='module')
 def clean_table():
-    a = [
+    columns = [
         "eventid",
 
         "iyear",
@@ -84,7 +84,7 @@ def clean_table():
         "nkill",
         "nwound",
     ]
-    return flow_first_normalize(CSV_DATA_MAIN_TABLE)
+    return create_sub_table(flow_first_normalize(CSV_DATA_MAIN_TABLE), columns)
 
 
 @pytest.fixture(scope='module')
