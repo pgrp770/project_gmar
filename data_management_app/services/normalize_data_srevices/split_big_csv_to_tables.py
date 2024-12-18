@@ -4,12 +4,12 @@ import toolz as tz
 from data_management_app.utils.pandas_utils import *
 
 
-def normalize_region_table(df: DataFrame) -> List[Dict]:
-    return create_sub_table(df, ["region", "region_txt"]).dropna().to_dict('records')
+def normalize_region_table(df: DataFrame) -> pd.DataFrame:
+    return create_sub_table(df, ["region", "region_txt"])
 
 
 def normalize_country_table(df: DataFrame) -> DataFrame:
-    return create_sub_table(df, ["region", "country", "country_txt"])
+    return create_sub_table(df, ["region", "country_txt"])
 
 
 def normalize_city_table(df: DataFrame) -> DataFrame:
