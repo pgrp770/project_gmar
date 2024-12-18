@@ -8,6 +8,13 @@ class TerrorAttack(Base):
     __tablename__ = 'terror_attacks'
     id = Column(Integer, primary_key=True)
 
+    year = Column(Integer)
+    month = Column(Integer)
+    day = Column(Integer)
+
+    kills = Column(Integer)
+    wounds = Column(Integer)
+
     nationalities = relationship('TerrorAttackNationality', back_populates='terror_attacks')
 
     groups = relationship('TerrorAttackGroup', back_populates='terror_attacks')
