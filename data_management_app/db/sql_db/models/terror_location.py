@@ -12,3 +12,5 @@ class TerrorLocation(Base):
 
     city_id = Column(Integer, ForeignKey('cities.id'))
     city = relationship('City', backref='regions')
+
+    terror_attacks = relationship('TerrorAttackWeapon', back_populates='terror_location')
