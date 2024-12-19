@@ -3,6 +3,9 @@ import toolz as tz
 
 from data_management_app.utils.pandas_utils import *
 
+def normalize_terror_attack_table(df: DataFrame) -> DataFrame:
+    return create_sub_table(df, ["Date", "nkill", "nwound"])
+
 
 def normalize_region_table(df: DataFrame) -> pd.DataFrame:
     return create_sub_table(df, ["region", "region_txt"])
@@ -24,105 +27,60 @@ def normalize_terror_location_table(df: DataFrame) -> DataFrame:
 
 
 def normalize_attack_type_table(df: DataFrame) -> DataFrame:
-    return combine_columns_with_ids(df, [
-        [
-            "attacktype1",
+    return tz.pipe(
+        combine_columns(df, [
             "attacktype1_txt",
-        ],
-        [
-            "attacktype2",
             "attacktype2_txt",
-        ],
-        [
-            "attacktype3",
             "attacktype3_txt",
-        ]
-    ], ["attack_type_id", "attack_type"])
+
+        ], "name"),
+        lambda x: create_ids(x, "attack_type"),
+    )
+
 
 
 def normalize_weapon_table(df: DataFrame) -> DataFrame:
-    return combine_columns_with_ids(df, [
-        [
-            "weaptype1",
+
+    return tz.pipe(
+        combine_columns(df, [
             "weaptype1_txt",
-        ],
-        [
-            "weapsubtype1",
             "weapsubtype1_txt",
-        ],
-        [
-            "weaptype2",
             "weaptype2_txt",
-        ],
-        [
-            "weapsubtype2",
             "weapsubtype2_txt",
-        ],
-        [
-            "weaptype3",
             "weaptype3_txt",
-        ],
-        [
-            "weapsubtype3",
             "weapsubtype3_txt",
-        ],
-        [
-            "weaptype4",
             "weaptype4_txt",
-        ],
-        [
-            "weapsubtype4",
             "weapsubtype4_txt",
-        ]
-    ], ["attack_type_id", "attack_type"])
+
+        ], "weapon_name"),
+        lambda x: create_ids(x, "weapon"),
+    )
 
 
 def normalize_target_type_table(df: DataFrame) -> DataFrame:
-    return combine_columns_with_ids(df, [
-        [
-            "targtype1",
+    return tz.pipe(
+        combine_columns(df, [
             "targtype1_txt",
-        ],
-        [
-            "targtype2",
             "targtype2_txt",
-        ],
-        [
-            "targtype3",
             "targtype3_txt",
-        ],
-        [
-            "targsubtype1",
             "targsubtype1_txt",
-        ],
-        [
-            "targsubtype2",
             "targsubtype2_txt",
-        ],
-        [
-            "targsubtype3",
             "targsubtype3_txt",
-        ]
 
-    ], ["target_type_id", "target_type"])
-
+        ], "target_type_name"),
+        lambda x: create_ids(x, "target_type"),
+    )
 
 def normalize_nationality_table(df: DataFrame) -> DataFrame:
-    return combine_columns_with_ids(df, [
-        [
-            "natlty1",
-            "natlty1_txt"
-        ],
-        [
-            "natlty2",
+    return tz.pipe(
+        combine_columns(df, [
+            "natlty1_txt",
             "natlty2_txt",
-        ],
-        [
-            "natlty3",
             "natlty3_txt",
-        ],
-    ], ["nationality_id", "nationality"])
 
+        ], "nationality"),
+        lambda x: create_ids(x, "nationality"),
+    )
 
 def normalize_group_table(df: DataFrame) -> DataFrame:
     return tz.pipe(
@@ -142,6 +100,10 @@ def apply_city_id_on_main_csv(df: DataFrame, cities: DataFrame) -> DataFrame:
 def apply_terror_location_id_on_main_csv(df: DataFrame, terror_location: DataFrame) -> DataFrame:
     map_id_terror_location = map_id(terror_location, ["city_id", "longitude", "latitude"], "terror_location")
     return add_id_columns_to_table_with_map(df, map_id_terror_location, ["city_id", "longitude", "latitude"], "terror_location")
+
+def apply_attack_type_id_on_main_csv(df: DataFrame, attack_type: DataFrame) -> DataFrame:
+    map_id_terror_location = map_id(attack_type, "attack_type", "attack_type")
+    return add_id_column_to_table_with_map(df, map_id_terror_location, "name", "attack_type")
 
 def apply_groups_id_on_main_csv(df: DataFrame, groups: DataFrame) -> DataFrame:
     map_id_groups = map_id(groups, "group_name", "group")

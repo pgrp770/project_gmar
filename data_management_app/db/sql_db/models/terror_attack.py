@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 from data_management_app.db.sql_db.models import Base
@@ -8,9 +8,7 @@ class TerrorAttack(Base):
     __tablename__ = 'terror_attacks'
     id = Column(Integer, primary_key=True)
 
-    year = Column(Integer)
-    month = Column(Integer)
-    day = Column(Integer)
+    date = Column(DateTime)
 
     kills = Column(Integer)
     wounds = Column(Integer)

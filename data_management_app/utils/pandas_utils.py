@@ -40,6 +40,7 @@ def create_sub_table_with_id(df: pd.DataFrame, columns: List[str], object_name: 
 
 
 def map_id(df: pd.DataFrame, key: str, object_name: str) -> Dict[List, int]:
+
     return df.set_index(key)[f'{object_name}_id'].to_dict()
 
 
