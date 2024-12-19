@@ -1,118 +1,63 @@
-from dataclasses import asdict
 from itertools import combinations
 from typing import List
 import pandas as pd
 from statistics_app.db.sql_db.repostiories.terror_attack_repository import get_all_terror_attacks
 import toolz as tz
-import numpy as np
 
+from statistics_app.services.routes_services.statistic_route_services.data_for_service import \
+    get_id_date_casualties_country_region, get_id_date_fatal_groups, get_id_date_region, get_id_date_region_groups
 
 
 # 1
-def get_attacks_order_by_fatal():
-    attacks = get_all_terror_attacks()
-    return tz.pipe([
-        {
-            "id": attack.id,
-            "date": attack.date,
-            "fatal": attack.kills + attack.wounds,
-            "country": attack.terror_location.city.country.name,
-            "region": attack.terror_location.city.country.region.name,
-        }
-        for attack in attacks
-    ],
-        lambda x : sorted(x, key=lambda y: y["fatal"], reverse=True),
+def get_deadliest_attack_endpoint_service(limit=0):
+    return tz.pipe(
+        get_id_date_casualties_country_region(get_all_terror_attacks()),
+        lambda x: sorted(x, key=lambda y: y["casualties"], reverse=True),
+        lambda li: tz.take(limit, li) if limit > 0 else li,
+        list
     )
-
-def get_top_5_dangeraus_attacks(li: List[dict]):
-    return li[:5]
 
 
 # 2
-def average_fatal_by_region(li: List[dict]):
+def get_average_fatal_by(target: str) -> List[dict]:
     return tz.pipe(
-        li,
-        lambda x: tz.groupby(lambda item: item['region'], x),
+        get_id_date_casualties_country_region(get_all_terror_attacks()),
+        lambda x: tz.groupby(lambda item: item[target], x),
         lambda grouped: {region: len(items) for region, items in grouped.items()}
     )
 
-def average_fatal_by_country(li: List[dict]):
-    return tz.pipe(
-        li,
-        lambda x: tz.groupby(lambda item: item['country'], x),
-        lambda grouped: {region: len(items) for region, items in grouped.items()}
-    )
 
 # 3
-def foo():
-    attacks = get_all_terror_attacks()
-    return tz.pipe([
-        {
-            "id": attack.id,
-            "date": attack.date,
-            "fatal": attack.kills + attack.wounds,
-            "country": attack.terror_location.city.country.name,
-            "region": attack.terror_location.city.country.region.name,
-            "groups": [group.group.name for group in attack.groups]
-        }
-        for attack in attacks
-    ],
-        lambda x : sorted(x, key=lambda y: y["fatal"], reverse=True),
-    )
-
-
-def top_5_groups_fatals(li: List[dict]):
-    df = pd.DataFrame(li)
+def get_top_5_groups_by_attacks():
+    df = pd.DataFrame(get_id_date_fatal_groups(get_all_terror_attacks()))
     expanded_df = df.explode('groups')
-    group_fatalities = expanded_df.groupby('groups')['fatal'].sum().reset_index()
-    sorted_groups = group_fatalities.sort_values(by='fatal', ascending=False)
+    group_fatalities = expanded_df.groupby('groups')['casualties'].sum().reset_index()
+    sorted_groups = group_fatalities.sort_values(by='casualties', ascending=False)
     return sorted_groups.to_dict('records')
 
-
-
-def calculate_percentage_change_e8():
-    attacks = get_all_terror_attacks()
-    attacks_list = [
-        {
-            "id": attack.id,
-            "date": attack.date,
-            "region": attack.terror_location.city.country.region.name,
-        }
-        for attack in attacks
-    ]
-    df = pd.DataFrame(attacks_list)
+# 6
+def get_attack_change_percentage_by_region():
+    df = pd.DataFrame(get_id_date_region(get_all_terror_attacks()))
     df['year'] = pd.to_datetime(df['date']).dt.year
     yearly_data = df.groupby(['region', 'year']).size().reset_index(name='attack_count')
     result = yearly_data.groupby('region').apply(
         lambda group: {
-            group['region'].iloc[0]:float(  # More informative key
+            group['region'].iloc[0]: float(
                 (group['attack_count'].iloc[-1] - group['attack_count'].iloc[0]) / group['attack_count'].iloc[0] * 100)
         }
     ).reset_index(drop=True)
     return result.tolist()
 
+
 # e8
-def get_amount_terror_attacks_by_region():
-    attacks = get_all_terror_attacks()
-    attacks_list = [
-        {
-            "id": attack.id,
-            "date": attack.date,
-            "region": attack.terror_location.city.country.region.name,
-            "groups": [group.group.name for group in attack.groups],
-        }
-        for attack in attacks
-    ]
-    df = pd.DataFrame(attacks_list)
-
-    # הרחבת קבוצות הטרור כך שכל שורה תייצג קשר בין קבוצה לאזור
+def get_most_active_groups_by_region():
+    df = pd.DataFrame(get_id_date_region_groups(get_all_terror_attacks()))
     df_exploded = df.explode('groups')
-
-    # חישוב כמות ההתקפות לפי אזור וקבוצה
     grouped = df_exploded.groupby(['region', 'groups']).size().reset_index(name='attack_count')
     most_active_groups = grouped.loc[grouped.groupby('region')['attack_count'].idxmax()]
 
     return most_active_groups.to_dict('records')
+
 
 # 11
 def corrolation_between_regions_and_targets():
@@ -136,6 +81,7 @@ def corrolation_between_regions_and_targets():
 
     return shared_targets.to_dict('records')
 
+
 # 13
 def friedns_group():
     attacks = get_all_terror_attacks()
@@ -156,6 +102,8 @@ def friedns_group():
 
     collaborations = df_exploded.groupby('group_combinations').size().reset_index(name='attack_count')
     return collaborations.to_dict('records')
+
+
 # 14
 def get_connection_group_attack_type():
     attacks = get_all_terror_attacks()
@@ -180,6 +128,7 @@ def get_connection_group_attack_type():
 
     return shared_attack_types
 
+
 # 16
 def get_unique_groups_of_all_region():
     attacks = get_all_terror_attacks()
@@ -203,6 +152,7 @@ def get_unique_groups_of_all_region():
     # Display the result
     return unique_groups_per_region.to_dict()
 
+
 # 19
 def e19(year):
     attacks = get_all_terror_attacks()
@@ -217,7 +167,6 @@ def e19(year):
         for attack in attacks
     ]
     df = pd.DataFrame(attacks_list)
-
 
     # Extract year from date
     df['year'] = df['date'].dt.year
@@ -236,6 +185,8 @@ def e19(year):
     same_target_groups = grouped[grouped['groups'].apply(lambda x: len(x) > 1)]
 
     print(same_target_groups.to_dict('records'))
+
+
 if __name__ == '__main__':
     pass
     # 19 print(e19(1))
@@ -243,8 +194,8 @@ if __name__ == '__main__':
     # 14 print(get_connection_group_attack_type())
     # 13 print(friedns_group())
     # 11 print(corrolation_between_regions_and_targets())
-    # 8 print(get_amount_terror_attacks_by_region("df"))
-    # 6 print(calculate_percentage_change_e8())
-    # 3 print(top_5_groups_fatals(foo()))
+    print(get_most_active_groups_by_region())
+    # print(get_attack_change_percentage_by_region())
+    # print(get_top_5_groups_by_attacks())
     # 2 print(average_fatal_by_country(get_attacks_order_by_fatal()))
     # 1 print(get_attacks_order_by_fatal())
