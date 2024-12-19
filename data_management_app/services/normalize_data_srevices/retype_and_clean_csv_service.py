@@ -117,6 +117,9 @@ def main_flow_clean_csv():
         main_flow_merging(),
         get_only_necessary_columns,
         tz.partial(fill_empty_cells_in_with_zeros, fillna_columns_with_zero),
+        lambda df: df.fillna({"attacktype1_txt":"Unknown", "attacktype2_txt":"Unknown", "attacktype3_txt":"Unknown"}),
+        lambda df: df.fillna({"attacktype1":9, "attacktype2":9, "attacktype3":9}),
+
         retype_ids_to_int,
         add_terror_attack_id_to_df
     )

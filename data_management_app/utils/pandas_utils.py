@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import toolz as t
 
 import pandas as pd
@@ -46,7 +46,12 @@ def map_id(df: pd.DataFrame, key: str, object_name: str) -> Dict[List, int]:
 def add_id_column_to_table_with_map(df: pd.DataFrame, map_ids: Dict, key: str, object_name: str) -> pd.DataFrame:
     def get_id(row):
         return map_ids.get(row[key], None)
+    df[f"{object_name}_id"] = df.apply(get_id, axis=1)
+    return df
 
+def add_id_columns_to_table_with_map(df: pd.DataFrame, map_ids: Dict, keys: List, object_name: str) -> pd.DataFrame:
+    def get_id(row):
+        return map_ids.get(tuple([row[key] for key in keys]), None)
     df[f"{object_name}_id"] = df.apply(get_id, axis=1)
     return df
 
