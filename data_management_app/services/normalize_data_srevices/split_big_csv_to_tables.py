@@ -4,7 +4,7 @@ import toolz as tz
 from data_management_app.utils.pandas_utils import *
 
 def normalize_terror_attack_table(df: DataFrame) -> DataFrame:
-    return create_sub_table(df, ["Date", "nkill", "nwound", "nperps"])
+    return create_sub_table(df, ["Date", "nkill", "nwound", "nperps", "terror_attack_id"])
 
 
 def normalize_region_table(df: DataFrame) -> pd.DataFrame:

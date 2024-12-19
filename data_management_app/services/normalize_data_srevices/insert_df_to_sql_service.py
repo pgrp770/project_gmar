@@ -109,7 +109,7 @@ def insert_terror_attack(terror_attack_df:DataFrame) -> None:
 
     return tz.pipe(
         terror_attack_df,
-        lambda d: d.rename(columns={'Date':'date', 'nkill': 'kills', 'nwound': 'wounds', 'nperps':'terrorist_amount'}, inplace=False),
+        lambda d: d.rename(columns={'Date':'date', 'nkill': 'kills', 'nwound': 'wounds', 'nperps':'terrorist_amount', "terror_attack_id": 'id'}, inplace=False),
         lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: TerrorAttack(**x)),
         list,
@@ -138,13 +138,13 @@ def insertion_postgres_coutnry_region_cities_terror_location():
 
 
 if __name__ == '__main__':
-
-    # insertion_postgres_coutnry_region_cities_terror_location()
+    init_db()
+    insertion_postgres_coutnry_region_cities_terror_location()
     df = main_flow_clean_csv()
-    # insert_attack_type(normalize_attack_type_table(df))
-    # insert_weapon(normalize_weapon_table(df))
-    # insert_target_type(normalize_target_type_table(df))
-    # insert_group(normalize_group_table(df))
-    # insert_nationality(normalize_nationality_table(df))
+    insert_attack_type(normalize_attack_type_table(df))
+    insert_weapon(normalize_weapon_table(df))
+    insert_target_type(normalize_target_type_table(df))
+    insert_group(normalize_group_table(df))
+    insert_nationality(normalize_nationality_table(df))
     insert_terror_attack(normalize_terror_attack_table(df))
 
