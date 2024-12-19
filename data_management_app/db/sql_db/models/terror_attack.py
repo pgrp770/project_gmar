@@ -23,8 +23,8 @@ class TerrorAttack(Base):
     attack_types = relationship('TerrorAttackAttackType',back_populates='terror_attacks', lazy='joined')
     weapons = relationship('TerrorAttackWeapon', back_populates='terror_attacks', lazy='joined')
 
-
-    terror_locations = relationship('TerrorAttackTerrorLocation', back_populates='terror_attacks', lazy='joined')
+    terror_location_id = Column(Integer, ForeignKey("terror_locations.id"))
+    terror_location = relationship('TerrorLocation', back_populates='terror_attacks', lazy='joined')
 
     def __repr__(self):
-        return f"<TerrorAttack=(id-{self.id}, date-{self.date}, kills-{self.kills}, wounds-{self.wounds}, terrorist-{self.terrorist_amount}, location-{self.terror_locations})>"
+        return f"<TerrorAttack=(id-{self.id}, date-{self.date}, kills-{self.kills}, wounds-{self.wounds}, terrorist-{self.terrorist_amount}, location-{self.terror_location.city.name})>"

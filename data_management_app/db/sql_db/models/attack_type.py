@@ -11,5 +11,6 @@ class AttackType(Base):
 
     terror_attacks = relationship(
         'TerrorAttackAttackType',
-        back_populates='attack_type'
+        back_populates='attack_type',
+        lazy='joined'
     )

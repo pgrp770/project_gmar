@@ -5,7 +5,7 @@ from data_management_app.utils.pandas_utils import *
 
 
 def normalize_terror_attack_table(df: DataFrame) -> DataFrame:
-    return create_sub_table(df, ["Date", "nkill", "nwound", "nperps", "terror_attack_id"])
+    return create_sub_table(df, ["Date", "nkill", "nwound", "nperps", "terror_attack_id", "terror_location_id"])
 
 
 def normalize_region_table(df: DataFrame) -> pd.DataFrame:
@@ -22,7 +22,7 @@ def apply_country_id_on_main_csv(df: DataFrame, countries: DataFrame) -> DataFra
 
 
 def normalize_city_table(df: DataFrame) -> DataFrame:
-    return create_sub_table_with_id(df, ["country_id", "city"], "city")
+    return create_sub_table_with_id(df, ["country_id", "city"], "city").drop_duplicates('city')
 
 
 def normalize_terror_location_table(df: DataFrame) -> DataFrame:
@@ -97,6 +97,7 @@ def normalize_group_table(df: DataFrame) -> DataFrame:
 
 
 def apply_city_id_on_main_csv(df: DataFrame, cities: DataFrame) -> DataFrame:
+
     map_id_cities = map_id(cities, "city", "city")
     return add_id_column_to_table_with_map(df, map_id_cities, "city", "city")
 

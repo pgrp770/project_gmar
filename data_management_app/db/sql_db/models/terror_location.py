@@ -13,4 +13,4 @@ class TerrorLocation(Base):
     city_id = Column(Integer, ForeignKey('cities.id'))
     city = relationship('City', back_populates='terror_locations', lazy='joined')
 
-    terror_attacks = relationship('TerrorAttackTerrorLocation', back_populates='terror_location', lazy='joined')
+    terror_attacks = relationship('TerrorAttack', back_populates='terror_location', lazy='joined')

@@ -24,4 +24,3 @@ from .terror_attack_attack_type import TerrorAttackAttackType
 from .weapon import Weapon
 from .terror_attack_weapon import TerrorAttackWeapon
 
-from .terror_attack_terror_location import TerrorAttackTerrorLocation

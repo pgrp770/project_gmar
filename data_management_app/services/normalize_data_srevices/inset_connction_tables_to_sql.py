@@ -110,20 +110,20 @@ def get_nationality_models_from_row(columns: List[str], row, map_id):
         tz.partial(map, lambda x: TerrorAttackNationality(**x)),
         list
     )
-def get_terror_location_models_from_row(columns: List[str], row, map_id, city_map_id):
-    def get_cit_id(l:List):
-        return [city_map_id.get(l[0]), l[1], l[2]]
-
-    return tz.pipe(
-        [row[name] for name in columns],
-        lambda x: get_cit_id(x),
-        tuple,
-        lambda x: {
-            "terror_location_id": map_id.get(x, "Unknown"),
-            "terror_attack_id": row["terror_attack_id"]
-        },
-        lambda x: [TerrorAttackTerrorLocation(**x)]
-    )
+# def get_terror_location_models_from_row(columns: List[str], row, map_id, city_map_id):
+#     def get_cit_id(l:List):
+#         return [city_map_id.get(l[0]), l[1], l[2]]
+#
+#     return tz.pipe(
+#         [row[name] for name in columns],
+#         lambda x: get_cit_id(x),
+#         tuple,
+#         lambda x: {
+#             "terror_location_id": map_id.get(x, "Unknown"),
+#             "terror_attack_id": row["terror_attack_id"]
+#         },
+#         lambda x: [TerrorAttackTerrorLocation(**x)]
+#     )
 
 if __name__ == '__main__':
 
@@ -154,7 +154,7 @@ if __name__ == '__main__':
         terror_attack_target_type += get_target_type_models_from_row(target_type_column, row, target_type_map_id)
         terror_attack_group += get_group_models_from_row(group_column, row, group_map_id)
         terror_attack_nationality += get_nationality_models_from_row(nationality_column, row, nationality_map_id)
-        terror_attack_terror_location += get_terror_location_models_from_row(target_location_column, row, terror_location_map_id, city_map_id)
+        # terror_attack_terror_location += get_terror_location_models_from_row(target_location_column, row, terror_location_map_id, city_map_id)
 
     terror_attack_terror_location = tz.pipe(
         terror_attack_terror_location,

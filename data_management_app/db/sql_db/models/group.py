@@ -9,6 +9,4 @@ class Group(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
-    terror_attacks = relationship('TerrorAttackGroup', back_populates='group')
-
-    # countries = relationship('Country', back_populates='region')
+    terror_attacks = relationship('TerrorAttackGroup', back_populates='group', lazy='joined')
