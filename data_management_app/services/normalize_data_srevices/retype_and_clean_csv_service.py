@@ -93,6 +93,7 @@ fillna_columns_with_zero = [
     "weapsubtype4",
     "nkill",
     "nwound",
+    "nperps"
 ]
 
 def get_only_necessary_columns(df: pd.DataFrame) -> pd.DataFrame:
@@ -111,7 +112,9 @@ def retype_ids_to_int(df: pd.DataFrame) -> pd.DataFrame:
 def add_terror_attack_id_to_df(df: pd.DataFrame) -> pd.DataFrame:
     df["terror_attack_id"] = range(1, len(df) + 1)
     return df
-
+def replace_negative_numbers(column, df: pd.DataFrame) -> pd.DataFrame:
+    df[column] = df[column].apply(lambda x: max(x, 0))
+    return df
 def main_flow_clean_csv():
     return tz.pipe(
         main_flow_merging(),
@@ -119,7 +122,7 @@ def main_flow_clean_csv():
         tz.partial(fill_empty_cells_in_with_zeros, fillna_columns_with_zero),
         lambda df: df.fillna({"attacktype1_txt":"Unknown", "attacktype2_txt":"Unknown", "attacktype3_txt":"Unknown"}),
         lambda df: df.fillna({"attacktype1":9, "attacktype2":9, "attacktype3":9}),
-
+        tz.partial(replace_negative_numbers, 'nperps'),
         retype_ids_to_int,
         add_terror_attack_id_to_df
     )

@@ -12,6 +12,7 @@ class TerrorAttack(Base):
 
     kills = Column(Integer)
     wounds = Column(Integer)
+    terrorist_amount = Column(Integer)
 
     nationalities = relationship('TerrorAttackNationality', back_populates='terror_attacks')
 
