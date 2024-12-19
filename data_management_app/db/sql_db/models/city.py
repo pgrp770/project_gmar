@@ -11,5 +11,5 @@ class City(Base):
 
 
     country_id = Column(Integer, ForeignKey('countries.id'))
-    country = relationship('Country', back_populates='cities')
-    terror_locations = relationship('TerrorLocation', back_populates='city')
+    country = relationship('Country', back_populates='cities', lazy='joined')
+    terror_locations = relationship('TerrorLocation', back_populates='city', lazy='dynamic')

@@ -10,6 +10,6 @@ class Country(Base):
     name = Column(String)
 
     region_id = Column(Integer, ForeignKey('regions.id'))
-    region = relationship('Region', back_populates='countries')
+    region = relationship('Region', back_populates='countries', lazy='joined')
 
-    cities = relationship('City', back_populates='country')
+    cities = relationship('City', back_populates='country', lazy='joined')
