@@ -14,3 +14,6 @@ class TerrorAttackWeapon(Base):
     terror_attack_id = Column(Integer, ForeignKey('terror_attacks.id'))
     terror_attacks = relationship('TerrorAttack', back_populates='weapons')
 
+
+    def __repr__(self):
+        return f"<TerrorAttackWeapon: (weapon_id={self.weapon_id}, terror_attack_id={self.terror_attack_id})>"

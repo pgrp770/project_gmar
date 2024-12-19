@@ -11,6 +11,3 @@ def get_all_generic(type):
     with session_maker() as session:
         return session.query(type).all()
 
-if __name__ == '__main__':
-
-    print(get_all_generic(TerrorAttack))

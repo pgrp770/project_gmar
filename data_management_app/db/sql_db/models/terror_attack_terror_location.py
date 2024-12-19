@@ -13,3 +13,6 @@ class TerrorAttackTerrorLocation(Base):
 
     terror_attack_id = Column(Integer, ForeignKey('terror_attacks.id'))
     terror_attacks = relationship('TerrorAttack', back_populates='terror_locations')
+
+    def __repr__(self):
+        return f"'{self.terror_attack_id}, {self.terror_location_id}'"

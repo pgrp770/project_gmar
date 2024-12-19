@@ -14,4 +14,5 @@ class TerrorAttackGroup(Base):
     terror_attack_id = Column(Integer, ForeignKey('terror_attacks.id'))
     terror_attacks = relationship('TerrorAttack', back_populates='groups')
 
-    # countries = relationship('Country', back_populates='region')
+    def __repr__(self):
+        return f"'{self.terror_attack_id}, {self.group_id}'"

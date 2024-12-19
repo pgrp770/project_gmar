@@ -13,7 +13,6 @@ columns = [
     "latitude",
     "longitude",
     "summary",
-
     "attacktype1_txt",
     "attacktype2_txt",
     "attacktype3_txt",
@@ -44,6 +43,30 @@ columns = [
 fillna_columns_with_empty_string=[
     "region_txt"
 ]
+fillna_columns_with_unknown={
+    'weaptype1_txt':'Unknown',
+    'weapsubtype1_txt':'Unknown',
+    'weaptype2_txt':'Unknown',
+    'weapsubtype2_txt':'Unknown',
+    'weaptype3_txt':'Unknown',
+    'weapsubtype3_txt':'Unknown',
+    'weaptype4_txt':'Unknown',
+    'weapsubtype4_txt':'Unknown',
+    "targtype1_txt": "Unknown",
+    "targtype2_txt": "Unknown",
+    "targtype3_txt": "Unknown",
+    "targsubtype1_txt": "Unknown",
+    "targsubtype2_txt": "Unknown",
+    "targsubtype3_txt": "Unknown",
+    "gname":"Unknown",
+    "gname2":"Unknown",
+    "gname3":"Unknown",
+    "natlty1_txt":"Unknown",
+    "natlty2_txt":"Unknown",
+    "natlty3_txt":"Unknown",
+    "latitude":0,
+    "longitude":0,
+}
 fillna_columns_with_zero = [
     "country",
     "region",
@@ -77,7 +100,7 @@ def main_flow_clean_csv():
         get_only_necessary_columns,
         tz.partial(fill_empty_cells_in_with_zeros, fillna_columns_with_zero),
         lambda df: df.fillna({"attacktype1_txt":"Unknown", "attacktype2_txt":"Unknown", "attacktype3_txt":"Unknown"}),
-        # lambda df: df.fillna({"attacktype1":9, "attacktype2":9, "attacktype3":9}),
+        lambda df: df.fillna(fillna_columns_with_unknown),
         tz.partial(replace_negative_numbers, 'nperps'),
         retype_ids_to_int,
         add_terror_attack_id_to_df
