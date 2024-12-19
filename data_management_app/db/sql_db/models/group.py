@@ -7,7 +7,7 @@ from data_management_app.db.sql_db.models import Base
 class Group(Base):
     __tablename__ = 'groups'
     id = Column(Integer, primary_key=True)
-    group_name = Column(String)
+    name = Column(String)
 
     terror_attacks = relationship('TerrorAttackGroup', back_populates='group')
 

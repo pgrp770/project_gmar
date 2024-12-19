@@ -14,7 +14,7 @@ def insert_region_table_to_postgres(df_region: DataFrame) -> None:
     df_region = pd.concat([df_region, pd.DataFrame({'region': [0], 'region_txt': ['Unknown']})], ignore_index=True)
     return t.pipe(
         df_region.dropna().drop_duplicates(subset=None, keep='first', inplace=False),
-        lambda df: df.rename(columns={'region': 'id', 'region_txt': 'region_name'}, inplace=False),
+        lambda df: df.rename(columns={'region': 'id', 'region_txt': 'name'}, inplace=False),
         lambda df: df.to_dict(orient='records'),
         tz.partial(map, lambda x: Region(**x)),
         list,
@@ -27,7 +27,7 @@ def insert_country_table_to_postgres(df_country: DataFrame) -> None:
     df['id'] = range(1, len(df) + 1)
     return tz.pipe(
         df,
-        lambda d: d.rename(columns={'region': 'region_id', 'country_txt': 'country_name'}, inplace=False),
+        lambda d: d.rename(columns={'region': 'region_id', 'country_txt': 'name'}, inplace=False),
         lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: Country(**x)),
         list,
@@ -39,7 +39,7 @@ def insert_country_table_to_postgres(df_country: DataFrame) -> None:
 def insert_city_table_to_postgres(df_city: DataFrame) -> None:
     return tz.pipe(
         df_city.dropna().dropna().drop_duplicates(subset="city", keep='first', inplace=False),
-        lambda d: d.rename(columns={'city': 'city_name', 'city_id': 'id'}, inplace=False),
+        lambda d: d.rename(columns={'city': 'name', 'city_id': 'id'}, inplace=False),
         lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: City(**x)),
         list,

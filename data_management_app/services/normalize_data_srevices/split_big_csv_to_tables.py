@@ -52,7 +52,7 @@ def normalize_weapon_table(df: DataFrame) -> DataFrame:
             "weaptype4_txt",
             "weapsubtype4_txt",
 
-        ], "weapon_name"),
+        ], "name"),
         lambda x: create_ids(x, "weapon"),
     )
 
@@ -67,7 +67,7 @@ def normalize_target_type_table(df: DataFrame) -> DataFrame:
             "targsubtype2_txt",
             "targsubtype3_txt",
 
-        ], "target_type_name"),
+        ], "name"),
         lambda x: create_ids(x, "target_type"),
     )
 
@@ -78,7 +78,7 @@ def normalize_nationality_table(df: DataFrame) -> DataFrame:
             "natlty2_txt",
             "natlty3_txt",
 
-        ], "nationality"),
+        ], "name"),
         lambda x: create_ids(x, "nationality"),
     )
 
@@ -88,7 +88,7 @@ def normalize_group_table(df: DataFrame) -> DataFrame:
             "gname",
             "gname2",
             "gname3"
-        ], "group_name"),
+        ], "name"),
         lambda x: create_ids(x, "group"),
     )
 

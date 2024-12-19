@@ -7,7 +7,7 @@ from data_management_app.db.sql_db.models import Base
 class Country(Base):
     __tablename__ = 'countries'
     id = Column(Integer, primary_key=True)
-    country_name = Column(String)
+    name = Column(String)
 
     region_id = Column(Integer, ForeignKey('regions.id'))
     region = relationship('Region', back_populates='countries')
