@@ -1,4 +1,4 @@
-from data_management_app.db.sql_db.models import TerrorAttack, City
+from data_management_app.db.sql_db.models import *
 from data_management_app.db.sql_db.repositories.postgres_repository.postgres_crud import get_all_generic
 
 a = [
@@ -34,7 +34,9 @@ a = [
 
 def get_map_id_from_models(model):
     l = get_all_generic(model)
-    return {model.city_name: model.id for model in l}
+    return {model.name: model.id for model in l}
 
 if __name__ == '__main__':
-    print(get_map_id_from_models(City))
+    tables_without_connections = [Weapon, AttackType, TargetType, Group, Nationality]
+    tables_connection = [TerrorAttackWeapon, TerrorAttackAttackType, TerrorAttackTargetType, TerrorAttackGroup, TerrorAttackNationality]
+    print(list(map(lambda x: get_map_id_from_models(x), tables_without_connections)))
