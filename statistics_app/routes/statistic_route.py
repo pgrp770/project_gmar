@@ -1,7 +1,8 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, Response, make_response
+import folium
 
 from statistics_app.services.routes_services.statistic_route_services.statistic_route_service import *
-
+from statistics_app.services.routes_services.folium_map_services.try_map import try_one
 statistic_bluprint = Blueprint('statistic_bluprint', __name__)
 
 
@@ -16,12 +17,25 @@ def get_deadliest_attack_endpoint():
 
 
 # e_2
+# @statistic_bluprint.route('/average-casualties-by/<string:target>', methods=['GET'])
+# def get_average_casualties_by_region_endpoint(target):
+#     try:
+#         a = get_average_casualties(target, int(request.args.get('limit', 0)))
+#
+#         return try_one(a).get_root().render() , 200
+#     except Exception as e:
+#         return jsonify({'message': str(e)}), 500
+
 @statistic_bluprint.route('/average-casualties-by/<string:target>', methods=['GET'])
 def get_average_casualties_by_region_endpoint(target):
     try:
-        return jsonify(get_average_casualties_by_pandas(target, int(request.args.get('limit', 0)))), 200
+        data = get_average_casualties(target, int(request.args.get('limit', 0)))
+        response = make_response(try_one(data))
+        return response
     except Exception as e:
         return jsonify({'message': str(e)}), 500
+
+
 
 
 # e_3

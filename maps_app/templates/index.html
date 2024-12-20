@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask HTML Example with Iframe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        h1, h3 {
+            color: #333;
+        }
+
+        .iframe-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns */
+            grid-template-rows: auto auto; /* Two rows */
+            gap: 20px; /* Spacing between iframes */
+            margin-top: 20px;
+        }
+
+        iframe {
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Light shadow */
+            border: none; /* Remove borders */
+            border-radius: 8px; /* Optional rounded corners */
+            width: 100%; /* Responsive width */
+            height: 400px; /* Fixed height */
+        }
+    </style>
+</head>
+<body>
+    <h1>Statistics</h1>
+    <h3>Average Casualties</h3>
+
+    <div class="iframe-container">
+        <div>
+            <p>All regions</p>
+            <iframe src="http://127.0.0.1:5000/api/statistics/average-casualties-by/region?"></iframe>
+        </div>
+        <div>
+            <p>Top 5 regions</p>
+            <iframe src="http://127.0.0.1:5000/api/statistics/average-casualties-by/region?limit=5"></iframe>
+        </div>
+        <div>
+            <p>All countries</p>
+            <iframe src="http://127.0.0.1:5000/api/statistics/average-casualties-by/country?"></iframe>
+        </div>
+        <div>
+            <p>Top 5 countries</p>
+            <iframe src="http://127.0.0.1:5000/api/statistics/average-casualties-by/country?limit=5"></iframe>
+        </div>
+    </div>
+</body>
+</html>

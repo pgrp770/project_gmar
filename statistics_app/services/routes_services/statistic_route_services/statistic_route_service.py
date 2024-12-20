@@ -1,6 +1,8 @@
 from itertools import combinations
 from typing import List, Dict
 import pandas as pd
+
+from statistics_app.db.sql_db.repostiories.location_repository import *
 from statistics_app.db.sql_db.repostiories.terror_attack_repository import get_all_terror_attacks
 import toolz as tz
 
@@ -18,14 +20,25 @@ def get_deadliest_attack_endpoint_service(limit:int) -> List[Dict]:
 
 
 # 2
-def get_average_casualties_by_pandas(target: str, limit: int) -> List[Dict]:
 
+
+def get_average_casualties(target: str, limit: int) -> List[Dict]:
     df = pd.DataFrame(data_service.get_id_date_casualties_country_region(get_all_terror_attacks()))
+
     grouped = df.groupby(target).agg(casualties=("casualties", "sum")).reset_index()
+
     total_casualties = grouped["casualties"].sum()
     grouped["casualties_average"] = (grouped["casualties"] / total_casualties) * 100
+
     grouped = grouped.sort_values("casualties", ascending=False)
     grouped = grouped.head(limit) if limit > 0 else grouped
+
+    if target == "country":
+        grouped['latitude'] = grouped['country'].apply(lambda x: get_coordinates_from_country(x)['latitude'])
+        grouped['longitude'] = grouped['country'].apply(lambda x: get_coordinates_from_country(x)['longitude'])
+    elif target == "region":
+        grouped['latitude'] = grouped['region'].apply(lambda x: get_coordinates_from_region(x)['latitude'])
+        grouped['longitude'] = grouped['region'].apply(lambda x: get_coordinates_from_region(x)['longitude'])
 
     return grouped.to_dict(orient="records")
 
@@ -130,13 +143,13 @@ def get_similar_goals_timeline_by_group():
 
 if __name__ == '__main__':
     pass
-    print(get_similar_goals_timeline_by_group())
+    # print(get_similar_goals_timeline_by_group())
     # print(get_high_intergroup_activity_by_region("country"))
     # print(get_shared_attack_strategies_by_region("region"))
     # 13 print(get_groups_involved_in_same_attacks())
     # 11 print(get_region_targets_intersection("country"))
     # 8 print(get_most_active_groups_by_region())
-    print(get_attack_change_percentage_by_region())
+    # print(get_attack_change_percentage_by_region())
     # 3 print(get_top_5_groups_by_attacks())
-    # 2 print(average_fatal_by_country(get_attacks_order_by_fatal()))
+    print(get_average_casualties("country", 10))
     # 1 print(get_attacks_order_by_fatal())

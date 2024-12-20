@@ -6,9 +6,9 @@ def get_id_date_casualties_country_region(attack_li: List) -> List[Dict]:
         {
             "id": attack.id,
             "date": attack.date,
-            "casualties": attack.kills + attack.wounds,
-            "country": attack.terror_location.city.country.name,
-            "region": attack.terror_location.city.country.region.name,
+            "casualties": attack.kills * 2 + attack.wounds,
+            "country": attack.terror_location.city.country.id,
+            "region": attack.terror_location.city.country.region.id,
         }
         for attack in attack_li
     ]
