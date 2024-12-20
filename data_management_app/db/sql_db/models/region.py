@@ -5,7 +5,9 @@ from data_management_app.db.sql_db.models import Base
 
 
 class Region(Base):
+
     __tablename__ = 'regions'
+
     id = Column(Integer, primary_key=True)
     name = Column(String)
 

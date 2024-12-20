@@ -5,7 +5,9 @@ from data_management_app.db.sql_db.models import Base
 
 
 class TerrorAttackAttackType(Base):
+
     __tablename__ = 'terror_attack_attack_type_relations'
+
     id = Column(Integer, primary_key=True)
 
     attack_type_id = Column(Integer, ForeignKey('attack_types.id'))
@@ -15,4 +17,4 @@ class TerrorAttackAttackType(Base):
     terror_attacks = relationship('TerrorAttack', back_populates='attack_types', lazy='joined')
 
     def __repr__(self):
-        return f"'{self.terror_attack_id}, {self.attack_type_id}'"
+        return f"<TerrorAttackAttackType(attack_type_id-{self.attack_type_id}, terror_attack_id-{self.terror_attack_id})?"

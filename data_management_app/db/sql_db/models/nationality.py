@@ -5,8 +5,13 @@ from data_management_app.db.sql_db.models import Base
 
 
 class Nationality(Base):
+
     __tablename__ = 'nationalities'
+
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
     terror_attacks = relationship('TerrorAttackNationality', back_populates='nationality')
+
+    def __repr__(self):
+        return f'<Nationality(id={self.id}, name={self.name})>'
