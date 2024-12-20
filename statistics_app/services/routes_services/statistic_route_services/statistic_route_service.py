@@ -99,7 +99,15 @@ def get_region_targets_intersection(target):
     df = pd.DataFrame(data_service.get_id_date_country_region_groups_targets(get_all_terror_attacks()))
     df_exploded = df.explode('groups').explode('targets')
     grouped = df_exploded.groupby([target, 'targets'])['groups'].apply(lambda x: list(set(x.dropna()))).reset_index()
+    if target == "country":
+        grouped['latitude'] = grouped['country'].apply(lambda x: get_coordinates_from_country(x)['latitude'])
+        grouped['longitude'] = grouped['country'].apply(lambda x: get_coordinates_from_country(x)['longitude'])
+    elif target == "region":
+        grouped['latitude'] = grouped['region'].apply(lambda x: get_coordinates_from_region(x)['latitude'])
+        grouped['longitude'] = grouped['region'].apply(lambda x: get_coordinates_from_region(x)['longitude'])
+
     shared_targets = grouped[grouped['groups'].apply(len) > 1]
+
 
     return shared_targets.to_dict('records')
 
@@ -122,7 +130,14 @@ def get_shared_attack_strategies_by_region(target):
     df_exploded = df.explode('groups').explode('attack_types')
     df_exploded.dropna(subset="groups", inplace=True)
     grouped = df_exploded.groupby([target, 'attack_types'])['groups'].apply(lambda x: list(set(x))).reset_index()
+    if target == "country":
+        grouped['latitude'] = grouped['country'].apply(lambda x: get_coordinates_from_country(x)['latitude'])
+        grouped['longitude'] = grouped['country'].apply(lambda x: get_coordinates_from_country(x)['longitude'])
+    elif target == "region":
+        grouped['latitude'] = grouped['region'].apply(lambda x: get_coordinates_from_region(x)['latitude'])
+        grouped['longitude'] = grouped['region'].apply(lambda x: get_coordinates_from_region(x)['longitude'])
     shared_attack_types = grouped[grouped['groups'].apply(len) > 1]
+
 
     return shared_attack_types.to_dict('records')
 
@@ -158,12 +173,12 @@ def get_similar_goals_timeline_by_group():
 if __name__ == '__main__':
     pass
     # print(get_similar_goals_timeline_by_group())
-    # print(get_high_intergroup_activity_by_region("country"))
-    # print(get_shared_attack_strategies_by_region("region"))
-    # 13 print(get_groups_involved_in_same_attacks())
-    # 11 print(get_region_targets_intersection("country"))
-    # 8 print(get_most_active_groups_by_region())
-    print(get_attack_change_percentage_by_region())
+    # print(get_high_intergroup_activity_by_region("country")) # 16
+    print(get_shared_attack_strategies_by_region("region")) # 14
+    # print(get_groups_involved_in_same_attacks()) # 13
+    # print(get_region_targets_intersection("country")) # 11
+    # print(get_most_active_groups_by_region()) # 8
+    # print(get_attack_change_percentage_by_region())# 6
     # 3 print(get_top_5_groups_by_attacks())
     # print(get_average_casualties("country", 10))
     # 1 print(get_attacks_order_by_fatal())

@@ -49,5 +49,61 @@ def e_6(data):
     return m._repr_html_()  # Render the map as HTML for embedding
 
 
+import folium
+
+
+def e_11(data):
+    m = folium.Map(location=[20, 0], zoom_start=2)  # Initial map view
+
+    # Iterate over your data
+    for row in data:
+        # Make sure there are latitude and longitude values
+        if row['latitude'] and row['longitude']:
+            # Create a CircleMarker for each data point
+            folium.CircleMarker(
+                location=(row['latitude'], row['longitude']),
+                radius=5,  # Static radius or scale it based on another value
+                popup=folium.Popup(
+                    f"Targets: {row['targets']}<br>Groups: {', '.join(row['groups'])}",
+                    max_width=300  # Set the maximum popup width
+                ),
+                color='red',  # Set the border color of the circle
+                fill=True,
+                fill_color='red'  # Set the fill color inside the circle
+            ).add_to(m)
+
+    return m._repr_html_()
+
+
+def e_14(data):
+    m = folium.Map(location=[20, 0], zoom_start=2)  # Initial map view
+
+    # Iterate over your data
+    for row in data:
+        # Check if there are latitude and longitude values
+        if row.get('latitude') and row.get('longitude'):
+            # Prepare the popup content
+            popup_content = ''
+            if 'country' in row:
+                popup_content += f"Country: {row['country']}<br>"
+            elif 'region' in row:
+                popup_content += f"Region: {row['region']}<br>"
+
+            # Add attack type and groups information
+            popup_content += f"Attack Type: {row['attack_types']}<br>Groups: {', '.join(row['groups'])}"
+
+            # Create a CircleMarker for each data point
+            folium.CircleMarker(
+                location=(row['latitude'], row['longitude']),
+                radius=5,  # Static radius or scale it based on another value
+                popup=folium.Popup(popup_content, max_width=300),  # Set the maximum popup width
+                color='red',  # Set the border color of the circle
+                fill=True,
+                fill_color='red'  # Set the fill color inside the circle
+            ).add_to(m)
+
+    return m._repr_html_()
+
+    return m._repr_html_()
 if __name__ == '__main__':
     e_6(get_attack_change_percentage_by_region())

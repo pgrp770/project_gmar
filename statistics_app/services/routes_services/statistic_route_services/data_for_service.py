@@ -54,8 +54,8 @@ def get_id_date_country_region_groups_targets(attack_li: List) -> List[Dict]:
         {
             "id": attack.id,
             "date": attack.date,
-            "country": attack.terror_location.city.country.name,
-            "region": attack.terror_location.city.country.region.name,
+            "country": attack.terror_location.city.country.id,
+            "region": attack.terror_location.city.country.region.id,
             "groups": [group.group.name for group in attack.groups],
             "targets": [target.target_type.name for target in attack.target_types]
         }
@@ -91,8 +91,8 @@ def get_id_date_country_region_groups_attack_types(attack_li: List) -> List[Dict
         {
             "id": attack.id,
             "date": attack.date,
-            "country": attack.terror_location.city.country.name,
-            "region": attack.terror_location.city.country.region.name,
+            "country": attack.terror_location.city.country.id,
+            "region": attack.terror_location.city.country.region.id,
             "groups": [group.group.name for group in attack.groups],
             "attack_types": [attack.attack_type.name for attack in attack.attack_types]
         }
