@@ -55,17 +55,31 @@ def get_top_5_groups_by_attacks():
 
 # 6
 def get_attack_change_percentage_by_region():
-
+    # Create DataFrame from raw data
     df = pd.DataFrame(data_service.get_id_date_region(get_all_terror_attacks()))
+
+    # Add year column
     df['year'] = pd.to_datetime(df['date']).dt.year
+
+    # Group by region and year, then count attacks
     yearly_data = df.groupby(['region', 'year']).size().reset_index(name='attack_count')
+
+    # Add latitude and longitude
+    yearly_data['latitude'] = yearly_data['region'].apply(lambda x: get_coordinates_from_region(x)['latitude'])
+    yearly_data['longitude'] = yearly_data['region'].apply(lambda x: get_coordinates_from_region(x)['longitude'])
+
+    # Calculate attack change percentage by region
     result = yearly_data.groupby('region').apply(
         lambda group: {
-            group['region'].iloc[0]: float(
+            'region': int(group['region'].iloc[0]),  # Explicitly convert to int
+            'latitude': float(group['latitude'].iloc[0]),  # Explicitly convert to float
+            'longitude': float(group['longitude'].iloc[0]),  # Explicitly convert to float
+            'attack_change_percentage': float(
                 (group['attack_count'].iloc[-1] - group['attack_count'].iloc[0]) / group['attack_count'].iloc[0] * 100)
         }
-    ).reset_index(drop=True)
-    return result.to_list()
+    ).tolist()  # Convert result to a list of dictionaries
+
+    return result
 
 
 # 8
@@ -149,7 +163,7 @@ if __name__ == '__main__':
     # 13 print(get_groups_involved_in_same_attacks())
     # 11 print(get_region_targets_intersection("country"))
     # 8 print(get_most_active_groups_by_region())
-    # print(get_attack_change_percentage_by_region())
+    print(get_attack_change_percentage_by_region())
     # 3 print(get_top_5_groups_by_attacks())
-    print(get_average_casualties("country", 10))
+    # print(get_average_casualties("country", 10))
     # 1 print(get_attacks_order_by_fatal())

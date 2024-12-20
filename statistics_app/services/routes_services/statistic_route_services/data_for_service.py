@@ -31,7 +31,7 @@ def get_id_date_region(attack_li: List) -> List[Dict]:
         {
             "id": attack.id,
             "date": attack.date,
-            "region": attack.terror_location.city.country.region.name,
+            "region": attack.terror_location.city.country.region.id,
         }
         for attack in attack_li
     ]
