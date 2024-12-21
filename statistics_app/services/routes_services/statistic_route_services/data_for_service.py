@@ -104,8 +104,8 @@ def get_id_country_region_groups(attack_li: List) -> List[Dict]:
     return [
         {
             "id": attack.id,
-            "country": attack.terror_location.city.country.name,
-            "region": attack.terror_location.city.country.region.name,
+            "country": attack.terror_location.city.country.id,
+            "region": attack.terror_location.city.country.region.id,
             "groups": [group.group.name for group in attack.groups],
         }
         for attack in attack_li

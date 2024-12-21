@@ -104,6 +104,40 @@ def e_14(data):
 
     return m._repr_html_()
 
+def e_16(data):
+    # Create the base map
+    m = folium.Map(location=[20, 0], zoom_start=2)  # Initial map view
+
+    # Iterate over your data
+    for row in data:
+        # Check if there are latitude and longitude values
+        if row.get('latitude') and row.get('longitude'):
+            # Determine whether the data is for a region or a country
+            if 'region' in row:
+                location_type = 'Region'
+                location_value = row['region']
+            elif 'country' in row:
+                location_type = 'Country'
+                location_value = row['country']
+            else:
+                continue  # Skip if neither 'region' nor 'country' is present
+
+            # Prepare the popup content
+            popup_content = f"{location_type}: {location_value}<br>Unique Groups: {row['unique_groups']}"
+
+            # Create a CircleMarker for each data point
+            folium.CircleMarker(
+                location=(row['latitude'], row['longitude']),
+                radius=5,  # Static radius or scale it based on unique_groups if needed
+                popup=folium.Popup(popup_content, max_width=300),  # Set the maximum popup width
+                color='blue' if location_type == 'Country' else 'green',  # Different colors for country/region
+                fill=True,
+                fill_color='blue' if location_type == 'Country' else 'green'  # Match fill color
+            ).add_to(m)
+
+    # Return the rendered map as HTML
     return m._repr_html_()
+
+
 if __name__ == '__main__':
     e_6(get_attack_change_percentage_by_region())

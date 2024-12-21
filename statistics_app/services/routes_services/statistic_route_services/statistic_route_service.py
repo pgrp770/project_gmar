@@ -144,13 +144,55 @@ def get_shared_attack_strategies_by_region(target):
 
 # 16
 def get_high_intergroup_activity_by_region(target: str):
-
+    #
+    # df = pd.DataFrame(data_service.get_id_country_region_groups(get_all_terror_attacks()))
+    # df_exploded = df.explode('groups')
+    # df_exploded = df_exploded.dropna(subset=['groups'])
+    # if target == "country":
+    #     df_exploded['latitude'] = df_exploded['country'].apply(lambda x: get_coordinates_from_country(x)['latitude'])
+    #     df_exploded['longitude'] = df_exploded['country'].apply(lambda x: get_coordinates_from_country(x)['longitude'])
+    # elif target == "region":
+    #     df_exploded['latitude'] = df_exploded['region'].apply(lambda x: get_coordinates_from_region(x)['latitude'])
+    #     df_exploded['longitude'] = df_exploded['region'].apply(lambda x: get_coordinates_from_region(x)['longitude'])
+    # print(df_exploded)
+    # unique_groups_per_region = df_exploded.groupby(target)['groups'].nunique()
+    # print(unique_groups_per_region)
+    #
+    #
+    # return unique_groups_per_region.to_dict()
+    # Create the DataFrame
     df = pd.DataFrame(data_service.get_id_country_region_groups(get_all_terror_attacks()))
-    df_exploded = df.explode('groups')
-    df_exploded = df_exploded.dropna(subset=['groups'])
-    unique_groups_per_region = df_exploded.groupby(target)['groups'].nunique()
 
-    return unique_groups_per_region.to_dict()
+    # Explode and drop NaN in the 'groups' column
+    df_exploded = df.explode('groups').dropna(subset=['groups'])
+
+    # Add latitude and longitude based on the target
+    if target == "country":
+        df_exploded['latitude'] = df_exploded['country'].apply(
+            lambda x: get_coordinates_from_country(x)['latitude'])
+        df_exploded['longitude'] = df_exploded['country'].apply(
+            lambda x: get_coordinates_from_country(x)['longitude'])
+    elif target == "region":
+        df_exploded['latitude'] = df_exploded['region'].apply(lambda x: get_coordinates_from_region(x)['latitude'])
+        df_exploded['longitude'] = df_exploded['region'].apply(
+            lambda x: get_coordinates_from_region(x)['longitude'])
+
+    # Group by target and compute unique groups, including lat/lon
+    grouped = (
+        df_exploded.groupby(target)
+        .agg(
+            unique_groups=('groups', 'nunique'),
+            latitude=('latitude', 'first'),
+            longitude=('longitude', 'first')
+        )
+    )
+
+    # Reset index for easier viewing
+    grouped = grouped.reset_index()
+
+    # Print results
+    print(grouped)
+    return grouped.to_dict('records')
 
 
 # 19
@@ -173,8 +215,8 @@ def get_similar_goals_timeline_by_group():
 if __name__ == '__main__':
     pass
     # print(get_similar_goals_timeline_by_group())
-    # print(get_high_intergroup_activity_by_region("country")) # 16
-    print(get_shared_attack_strategies_by_region("region")) # 14
+    print(get_high_intergroup_activity_by_region("region")) # 16
+    # print(get_shared_attack_strategies_by_region("region")) # 14
     # print(get_groups_involved_in_same_attacks()) # 13
     # print(get_region_targets_intersection("country")) # 11
     # print(get_most_active_groups_by_region()) # 8

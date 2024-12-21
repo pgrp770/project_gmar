@@ -93,5 +93,103 @@
         </div>
 
     </div>
+
+    <h3>high_intergroup_activity</h3>
+
+    <div class="iframe-container">
+        <div>
+            <p>All regions</p>
+            <iframe src="http://127.0.0.1:5000/api/statistics/regions/high-intergroup-activity/region"></iframe>
+        </div>
+
+        <div>
+            <p>All countries</p>
+            <iframe src="http://127.0.0.1:5000/api/statistics/regions/high-intergroup-activity/country"></iframe>
+        </div>
+
+    </div>
 </body>
 </html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Interactive Statistics</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            margin: 20px;-->
+<!--        }-->
+<!--        h1, h3 {-->
+<!--            color: #333;-->
+<!--        }-->
+<!--        .button-container {-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+<!--        button {-->
+<!--            margin: 5px;-->
+<!--            padding: 10px 20px;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+<!--        .output-container {-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+<!--        iframe {-->
+<!--            width: 100%;-->
+<!--            height: 400px;-->
+<!--            border: none;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h1>Interactive Statistics</h1>-->
+
+<!--    <div class="button-container">-->
+<!--        <h3>Average Casualties</h3>-->
+<!--        <button onclick="loadIframe('http://127.0.0.1:5000/api/statistics/average-casualties-by/region?')">All Regions</button>-->
+<!--        <button onclick="loadIframe('http://127.0.0.1:5000/api/statistics/average-casualties-by/region?limit=5')">Top 5 Regions</button>-->
+<!--        <button onclick="loadIframe('http://127.0.0.1:5000/api/statistics/average-casualties-by/country?')">All Countries</button>-->
+<!--        <button onclick="loadIframe('http://127.0.0.1:5000/api/statistics/average-casualties-by/country?limit=5')">Top 5 Countries</button>-->
+<!--    </div>-->
+
+<!--    <div class="button-container">-->
+<!--        <h3>Percent Difference</h3>-->
+<!--        <button onclick="loadIframe('http://127.0.0.1:5000/api/statistics/region/attack-change-percentage')">All Regions</button>-->
+<!--        <button onclick="loadIframe('http://127.0.0.1:5000/api/statistics/region/attack-change-percentage?limit=5')">Top 5 Regions</button>-->
+<!--    </div>-->
+
+<!--    <div class="button-container">-->
+<!--        <h3>Intersection</h3>-->
+<!--        <button onclick="loadIframe('http://127.0.0.1:5000/api/statistics/region/region-targets-intersection/region')">All Regions</button>-->
+<!--        <button onclick="loadIframe('http://127.0.0.1:5000/api/statistics/region/region-targets-intersection/country')">All Countries</button>-->
+<!--    </div>-->
+
+<!--    <div class="button-container">-->
+<!--        <h3>Shared Attack Strategies</h3>-->
+<!--        <button onclick="loadIframe('http://127.0.0.1:5000/api/statistics/regions/shared-attack-strategies/region')">All Regions</button>-->
+<!--        <button onclick="loadIframe('http://127.0.0.1:5000/api/statistics/regions/shared-attack-strategies/country')">All Countries</button>-->
+<!--    </div>-->
+
+<!--    <div class="button-container">-->
+<!--        <h3>High Intergroup Activity</h3>-->
+<!--        <button onclick="loadIframe('http://127.0.0.1:5000/api/statistics/regions/high-intergroup-activity/region')">All Regions</button>-->
+<!--        <button onclick="loadIframe('http://127.0.0.1:5000/api/statistics/regions/high-intergroup-activity/country')">All Countries</button>-->
+<!--    </div>-->
+
+<!--    <div class="output-container">-->
+<!--        <iframe id="output" src=""></iframe>-->
+<!--    </div>-->
+
+<!--    <script>-->
+<!--        function loadIframe(url) {-->
+<!--            document.getElementById('output').src = url;-->
+<!--        }-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+

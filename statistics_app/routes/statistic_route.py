@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request, Response, make_response
 import folium
 
 from statistics_app.services.routes_services.statistic_route_services.statistic_route_service import *
-from statistics_app.services.routes_services.folium_map_services.try_map import e_2, e_6, e_11, e_14
+from statistics_app.services.routes_services.folium_map_services.try_map import e_2, e_6, e_11, e_14, e_16
 
 statistic_bluprint = Blueprint('statistic_bluprint', __name__)
 
@@ -101,7 +101,8 @@ def get_shared_attack_strategies_by_region_endpoint(target):
 @statistic_bluprint.route('/regions/high-intergroup-activity/<string:target>', methods=['GET'])
 def get_high_intergroup_activity_by_region_endpoint(target):
     try:
-        return jsonify(get_high_intergroup_activity_by_region(target)), 200
+        data = get_high_intergroup_activity_by_region(target)
+        return make_response(e_16(data))
     except Exception as e:
         return jsonify({'message': str(e)}), 500
 
