@@ -2,7 +2,8 @@ from flask import Blueprint, jsonify, request, Response, make_response
 import folium
 
 from statistics_app.services.routes_services.statistic_route_services.statistic_route_service import *
-from statistics_app.services.routes_services.folium_map_services.send_html_maps_service import e_2, e_6, e_11, e_14, e_16
+from statistics_app.services.routes_services.folium_map_services.send_html_maps_service import e_2, e_6, e_11, e_14, \
+    e_16, e_8
 
 statistic_bluprint = Blueprint('statistic_bluprint', __name__)
 
@@ -63,7 +64,9 @@ def get_attack_change_percentage_by_region_endpoint():
 @statistic_bluprint.route('/regions/most-active-groups', methods=['GET'])
 def get_most_active_groups_by_region_endpoint():
     try:
-        return jsonify(get_most_active_groups_by_region()), 200
+        data = get_most_active_groups_by_region()
+        response = make_response(e_8(data))
+        return response
     except Exception as e:
         return jsonify({'message': str(e)}), 500
 

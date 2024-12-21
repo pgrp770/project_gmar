@@ -58,26 +58,22 @@ def get_attack_change_percentage_by_region():
     # Create DataFrame from raw data
     df = pd.DataFrame(data_service.get_id_date_region(get_all_terror_attacks()))
 
-    # Add year column
     df['year'] = pd.to_datetime(df['date']).dt.year
 
-    # Group by region and year, then count attacks
     yearly_data = df.groupby(['region', 'year']).size().reset_index(name='attack_count')
 
-    # Add latitude and longitude
     yearly_data['latitude'] = yearly_data['region'].apply(lambda x: get_coordinates_from_region(x)['latitude'])
     yearly_data['longitude'] = yearly_data['region'].apply(lambda x: get_coordinates_from_region(x)['longitude'])
 
-    # Calculate attack change percentage by region
     result = yearly_data.groupby('region').apply(
         lambda group: {
-            'region': int(group['region'].iloc[0]),  # Explicitly convert to int
-            'latitude': float(group['latitude'].iloc[0]),  # Explicitly convert to float
-            'longitude': float(group['longitude'].iloc[0]),  # Explicitly convert to float
+            'region': int(group['region'].iloc[0]),
+            'latitude': float(group['latitude'].iloc[0]),
+            'longitude': float(group['longitude'].iloc[0]),
             'attack_change_percentage': float(
                 (group['attack_count'].iloc[-1] - group['attack_count'].iloc[0]) / group['attack_count'].iloc[0] * 100)
         }
-    ).tolist()  # Convert result to a list of dictionaries
+    ).tolist()
 
     return result
 
@@ -89,8 +85,13 @@ def get_most_active_groups_by_region():
     df_exploded = df.explode('groups')
     grouped = df_exploded.groupby(['region', 'groups']).size().reset_index(name='attack_count')
     most_active_groups = grouped.loc[grouped.groupby('region')['attack_count'].idxmax()]
+    sorted_regions = most_active_groups.sort_values('attack_count', ascending=False)
 
-    return most_active_groups.to_dict('records')
+    sorted_regions['latitude'] = sorted_regions['region'].apply(lambda x: get_coordinates_from_region(x)['latitude'])
+    sorted_regions['longitude'] = sorted_regions['region'].apply(lambda x: get_coordinates_from_region(x)['longitude'])
+    top_five_regions = sorted_regions.head(5)
+
+    return top_five_regions.to_dict('records')
 
 
 # 11
@@ -215,11 +216,11 @@ def get_similar_goals_timeline_by_group():
 if __name__ == '__main__':
     pass
     # print(get_similar_goals_timeline_by_group())
-    print(get_high_intergroup_activity_by_region("region")) # 16
+    # print(get_high_intergroup_activity_by_region("region")) # 16
     # print(get_shared_attack_strategies_by_region("region")) # 14
     # print(get_groups_involved_in_same_attacks()) # 13
     # print(get_region_targets_intersection("country")) # 11
-    # print(get_most_active_groups_by_region()) # 8
+    print(get_most_active_groups_by_region()) # 8
     # print(get_attack_change_percentage_by_region())# 6
     # 3 print(get_top_5_groups_by_attacks())
     # print(get_average_casualties("country", 10))

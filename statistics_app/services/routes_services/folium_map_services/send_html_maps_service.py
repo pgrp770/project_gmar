@@ -49,7 +49,30 @@ def e_6(data):
     return m._repr_html_()  # Render the map as HTML for embedding
 
 
-import folium
+def e_8(data):
+    # Create a Folium map
+    m = folium.Map(location=[20, 0], zoom_start=2)
+
+    # Add data points to the map
+    for row in data:
+        # Check if latitude and longitude values are present
+        if row.get('latitude') and row.get('longitude'):
+            # Use CircleMarker to add a marker to the map
+            folium.CircleMarker(
+                location=(row['latitude'], row['longitude']),
+                radius=5,  # Adjust radius if needed
+                popup=folium.Popup(
+                    f"Region: {row['region']}<br>"
+                    f"Group: {row['groups']}<br>"
+                    f"Attack Count: {row['attack_count']}",
+                    max_width=300
+                ),
+                color='blue',  # Adjust marker color
+                fill=True,
+                fill_color='blue'
+            ).add_to(m)
+
+    return m._repr_html_()  # Render the map as HTML for embedding
 
 
 def e_11(data):
