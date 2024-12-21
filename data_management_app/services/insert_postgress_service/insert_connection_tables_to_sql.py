@@ -127,9 +127,6 @@ def get_nationality_models_from_row(columns: List[str], row, map_id):
 
 if __name__ == '__main__':
 
-    # df = main_flow_clean_csv().to_dict('records')
-    # print(df[0])
-
     weapons_map_id = get_map_id_from_models(Weapon)
     attack_type_map_id = get_map_id_from_models(AttackType)
     target_type_map_id = get_map_id_from_models(TargetType)
@@ -137,10 +134,7 @@ if __name__ == '__main__':
     nationality_map_id = get_map_id_from_models(Nationality)
     terror_location_map_id = get_map_id_from_terror_location()
     city_map_id = get_map_id_from_models(City)
-
-    print(terror_location_map_id)
     df = main_flow_clean_csv().to_dict('records')
-    print(df[0])
     terror_attack_weapons = []
     terror_attack_attack_type = []
     terror_attack_target_type = []

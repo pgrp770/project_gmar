@@ -1,10 +1,12 @@
 from pandas import DataFrame
 import toolz as tz
 
+from data_management_app.db.elastic_db.repositories.summery_repository import create_summery
 from data_management_app.db.sql_db.database import init_db
 from data_management_app.db.sql_db.models import Region, Country, City, TerrorLocation, AttackType, Weapon, TargetType, \
     Group, Nationality, TerrorAttack
 from data_management_app.db.sql_db.repositories.postgres_repository.postgres_crud import insert_many_generic
+from data_management_app.services.insert_elastic_service.insert_summery_service import from_list_to_actions
 from data_management_app.services.normalize_data_srevices.retype_and_clean_csv_service import main_flow_clean_csv
 from data_management_app.services.normalize_data_srevices.split_big_csv_to_tables import *
 from data_management_app.utils.pandas_utils import *
@@ -37,7 +39,7 @@ def insert_country_table_to_postgres(df_country: DataFrame) -> DataFrame:
 
 
 # apply_city_id_on_main_csv,
-def insert_city_table_to_postgres(df_city: DataFrame) -> None:
+def insert_city_table_to_postgres(df_city: DataFrame) -> DataFrame:
     df = df_city.dropna().dropna().drop_duplicates(subset="city", keep='first', inplace=False)
     tz.pipe(
         df.copy(),
@@ -122,12 +124,9 @@ def insertion_postgres_coutnry_region_cities_terror_location():
     insert_region_table_to_postgres(normalize_region_table(df))
     df_country = insert_country_table_to_postgres(normalize_country_table(df))
     apply_country_id_on_main_csv(df, df_country)
-
     df_city = insert_city_table_to_postgres(normalize_city_table(df))
     apply_city_id_on_main_csv(df, df_city)
     df["city_id"] = df["city_id"].fillna(3).astype(int)
-
-
     terror_locations = normalize_terror_location_table(df)
 
 
@@ -148,4 +147,5 @@ if __name__ == '__main__':
     insert_group(normalize_group_table(df))
     insert_nationality(normalize_nationality_table(df))
     insert_terror_attack(normalize_terror_attack_table(df))
+    create_summery(from_list_to_actions(normalize_terror_attack_table(df)[['terror_attack_id', 'summary', 'Date']].dropna().to_dict('records')))
 

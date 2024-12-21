@@ -13,6 +13,7 @@ class TerrorAttack(Base):
     date = Column(DateTime)
     kills = Column(Integer)
     wounds = Column(Integer)
+    summary = Column(String)
     terrorist_amount = Column(Integer)
 
     terror_location_id = Column(Integer, ForeignKey("terror_locations.id"))
