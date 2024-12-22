@@ -10,7 +10,6 @@ statistic_bluprint = Blueprint('statistic_bluprint', __name__)
 # e_1
 @statistic_bluprint.route('/deadliest-attack', methods=['GET'])
 def get_deadliest_attack_endpoint():
-    breakpoint()
     try:
         return jsonify(get_deadliest_attack_endpoint_service(int(request.args.get('limit', 0)))), 200
     except Exception as e:
@@ -53,7 +52,7 @@ def get_top_5_groups_by_attacks_endpoint():
 @statistic_bluprint.route('/region/attack-change-percentage', methods=['GET'])
 def get_attack_change_percentage_by_region_endpoint():
     try:
-        data = get_attack_change_percentage_by_region()
+        data = get_attack_change_percentage_by_region(int(request.args.get('limit', 0)))
         response = make_response(e_6(data))
         return response
     except Exception as e:

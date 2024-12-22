@@ -11,7 +11,7 @@ class Group(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
-    terror_attacks = relationship('TerrorAttackGroup', back_populates='group', lazy='joined')
+    terror_attacks = relationship('TerrorAttackGroup', back_populates='group')
 
     def __repr__(self):
         return f'<Group(id={self.id}, name={self.name})>'

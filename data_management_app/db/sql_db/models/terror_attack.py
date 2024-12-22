@@ -17,13 +17,13 @@ class TerrorAttack(Base):
     terrorist_amount = Column(Integer)
 
     terror_location_id = Column(Integer, ForeignKey("terror_locations.id"))
-    terror_location = relationship('TerrorLocation', back_populates='terror_attacks', lazy='joined')
+    terror_location = relationship('TerrorLocation', back_populates='terror_attacks')
 
-    nationalities = relationship('TerrorAttackNationality', back_populates='terror_attacks', lazy='joined')
-    groups = relationship('TerrorAttackGroup', back_populates='terror_attacks', lazy='joined')
-    target_types = relationship('TerrorAttackTargetType', back_populates='terror_attacks', lazy='joined')
-    attack_types = relationship('TerrorAttackAttackType', back_populates='terror_attacks', lazy='joined')
-    weapons = relationship('TerrorAttackWeapon', back_populates='terror_attacks', lazy='joined')
+    nationalities = relationship('TerrorAttackNationality', back_populates='terror_attacks')
+    groups = relationship('TerrorAttackGroup', back_populates='terror_attacks')
+    target_types = relationship('TerrorAttackTargetType', back_populates='terror_attacks')
+    attack_types = relationship('TerrorAttackAttackType', back_populates='terror_attacks')
+    weapons = relationship('TerrorAttackWeapon', back_populates='terror_attacks')
 
     def __repr__(self):
-        return f"<TerrorAttack=(id-{self.id}, date-{self.date}, kills-{self.kills}, wounds-{self.wounds}, terrorist-{self.terrorist_amount}, location-{self.terror_location.city.name})>"
+        return f"<TerrorAttack=(id-{self.id}, date-{self.date}, kills-{self.kills}, wounds-{self.wounds}, terrorist-{self.terrorist_amount}, location-{self.terror_location_id})>"

@@ -11,4 +11,4 @@ class Region(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
-    countries = relationship('Country', back_populates='region', lazy='joined')
+    countries = relationship('Country', back_populates='region')

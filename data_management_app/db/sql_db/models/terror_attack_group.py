@@ -11,10 +11,10 @@ class TerrorAttackGroup(Base):
     id = Column(Integer, primary_key=True)
 
     group_id = Column(Integer, ForeignKey('groups.id'))
-    group = relationship('Group', back_populates='terror_attacks', lazy='joined')
+    group = relationship('Group', back_populates='terror_attacks')
 
     terror_attack_id = Column(Integer, ForeignKey('terror_attacks.id'))
-    terror_attacks = relationship('TerrorAttack', back_populates='groups', lazy='joined')
+    terror_attacks = relationship('TerrorAttack', back_populates='groups')
 
     def __repr__(self):
         return f"<TerrorAttackGroup(group_id-{self.group_id}, terror_attack_id-{self.terror_attack_id})>"

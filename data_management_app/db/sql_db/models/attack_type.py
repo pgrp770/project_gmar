@@ -11,7 +11,7 @@ class AttackType(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
-    terror_attacks = relationship('TerrorAttackAttackType', back_populates='attack_type', lazy='joined')
+    terror_attacks = relationship('TerrorAttackAttackType', back_populates='attack_type')
 
     def __repr__(self):
         return f'<AttackType(id={self.id}, name={self.name})>'

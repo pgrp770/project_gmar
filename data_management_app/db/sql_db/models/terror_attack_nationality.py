@@ -11,10 +11,10 @@ class TerrorAttackNationality(Base):
     id = Column(Integer, primary_key=True)
 
     nationality_id = Column(Integer, ForeignKey('nationalities.id'))
-    nationality = relationship('Nationality', back_populates='terror_attacks', lazy='joined')
+    nationality = relationship('Nationality', back_populates='terror_attacks')
 
     terror_attack_id = Column(Integer, ForeignKey('terror_attacks.id'))
-    terror_attacks = relationship('TerrorAttack', back_populates='nationalities', lazy='joined')
+    terror_attacks = relationship('TerrorAttack', back_populates='nationalities')
 
     def __repr__(self):
         return f"<TerrorAttackNationality<(nationality_id-{self.nationality_id}, terror_attack_id-{self.terror_attack_id})>"
