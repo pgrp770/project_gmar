@@ -58,17 +58,25 @@ def e_8(data):
     m = folium.Map(location=[20, 0], zoom_start=2)
 
     for row in data:
+        top_group = row['top_5_groups'][0] if row['top_5_groups'] else None
+
         if row.get('latitude') and row.get('longitude'):
-            folium.Marker(
+            top_group_popup = f"Region: {row['region']}<br>" \
+                              f"Most Active Group: {top_group['group']}<br>" \
+                              f"Attack Count: {top_group['count']}<br>" \
+                              f"<br>Click to see all groups."
+
+            all_groups_info = '<br>'.join(
+                [f"Group: {group['group']} - Attacks: {group['count']}" for group in row['top_5_groups']]
+            )
+
+            marker = folium.Marker(
                 location=(row['latitude'], row['longitude']),
-                popup=folium.Popup(
-                    f"Region: {row['region']}<br>"
-                    f"Group: {row['group']}<br>"  
-                    f"Attack Count: {row['attack_count']}",
-                    max_width=300
-                ),
+                popup=folium.Popup(top_group_popup, max_width=300),
                 icon=folium.Icon(color='blue')
             ).add_to(m)
+
+            marker.add_child(folium.Popup(all_groups_info, max_width=300))
 
     return m._repr_html_()
 
