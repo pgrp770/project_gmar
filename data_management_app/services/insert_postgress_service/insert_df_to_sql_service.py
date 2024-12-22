@@ -147,5 +147,11 @@ if __name__ == '__main__':
     insert_group(normalize_group_table(df))
     insert_nationality(normalize_nationality_table(df))
     insert_terror_attack(normalize_terror_attack_table(df))
-    create_summery(from_list_to_actions(normalize_terror_attack_table(df)[['terror_attack_id', 'summary', 'Date']].dropna().to_dict('records')))
-
+    create_summery(
+        from_list_to_actions(
+            normalize_terror_attack_table(df)[['terror_attack_id', 'summary', 'Date']]
+            .dropna()
+            .assign(type='history')
+            .to_dict('records')
+        )
+    )
