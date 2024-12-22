@@ -127,15 +127,20 @@ def get_nationality_models_from_row(columns: List[str], row, map_id):
 
 if __name__ == '__main__':
 
-    weapons_map_id = get_map_id_from_models(Weapon)
+    # weapons_map_id = get_map_id_from_models(Weapon)
     attack_type_map_id = get_map_id_from_models(AttackType)
+    print("map attack_type")
     target_type_map_id = get_map_id_from_models(TargetType)
+    print("map target_type")
     group_map_id = get_map_id_from_models(Group)
+    print("map group")
     nationality_map_id = get_map_id_from_models(Nationality)
-    terror_location_map_id = get_map_id_from_terror_location()
-    city_map_id = get_map_id_from_models(City)
+    print("map nationality")
+    # terror_location_map_id = get_map_id_from_terror_location()
+    # city_map_id = get_map_id_from_models(City)
+    # print("map city")
     df = main_flow_clean_csv().to_dict('records')
-    terror_attack_weapons = []
+    # terror_attack_weapons = []
     terror_attack_attack_type = []
     terror_attack_target_type = []
     terror_attack_group = []
@@ -143,7 +148,7 @@ if __name__ == '__main__':
     terror_attack_terror_location = []
 
     for row in df:
-        terror_attack_weapons += get_weapon_models_from_row(weapon_column, row, weapons_map_id)
+        # terror_attack_weapons += get_weapon_models_from_row(weapon_column, row, weapons_map_id)
         terror_attack_attack_type += get_attack_type_models_from_row(attack_type_column, row, attack_type_map_id)
         terror_attack_target_type += get_target_type_models_from_row(target_type_column, row, target_type_map_id)
         terror_attack_group += get_group_models_from_row(group_column, row, group_map_id)
@@ -154,6 +159,7 @@ if __name__ == '__main__':
         terror_attack_terror_location,
         tz.partial(filter, lambda x: x.terror_location_id != "Unknown"),
     )
-    a = [terror_attack_weapons, terror_attack_attack_type, terror_attack_target_type, terror_attack_group, terror_attack_nationality, terror_attack_terror_location]
+    a = [terror_attack_attack_type, terror_attack_target_type, terror_attack_group, terror_attack_nationality] # terror_attack_weapons,
     for models in a:
         insert_many_generic(models)
+        print(f"{type(models[0])} was inserted")

@@ -1,5 +1,4 @@
-from flask import Blueprint, jsonify, request, Response, make_response
-import folium
+from flask import Blueprint, jsonify, request, make_response
 
 from statistics_app.services.routes_services.statistic_route_services.statistic_route_service import *
 from statistics_app.services.routes_services.folium_map_services.send_html_maps_service import e_2, e_6, e_11, e_14, \
@@ -11,6 +10,7 @@ statistic_bluprint = Blueprint('statistic_bluprint', __name__)
 # e_1
 @statistic_bluprint.route('/deadliest-attack', methods=['GET'])
 def get_deadliest_attack_endpoint():
+    breakpoint()
     try:
         return jsonify(get_deadliest_attack_endpoint_service(int(request.args.get('limit', 0)))), 200
     except Exception as e:

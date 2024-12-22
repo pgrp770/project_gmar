@@ -127,10 +127,10 @@ def test_normalize_terror_location(clean_table_with_city_ids):
     print(result)
     assert len(result.columns.tolist()) == 5
 
-def test_normalize_weapon_table(clean_table):
-    result = normalize_weapon_table(clean_table)
-    print(result.to_string(index=False))
-    assert len(result.columns.tolist()) == 2
+# def test_normalize_weapon_table(clean_table):
+#     result = normalize_weapon_table(clean_table)
+#     print(result.to_string(index=False))
+#     assert len(result.columns.tolist()) == 2
 
 
 def test_normalize_attack_type_table(clean_table):

@@ -61,15 +61,15 @@ def insert_terror_location_to_postgres(df_terror_location: DataFrame) -> None:
     )
 
 
-def insert_weapon(weapon_df:DataFrame) -> None:
-    return tz.pipe(
-        weapon_df,
-        lambda d: d.rename(columns={'weapon_id': 'id'}, inplace=False),
-        lambda d: d.to_dict(orient='records'),
-        tz.partial(map, lambda x: Weapon(**x)),
-        list,
-        lambda di: insert_many_generic(di),
-    )
+# def insert_weapon(weapon_df:DataFrame) -> None:
+#     return tz.pipe(
+#         weapon_df,
+#         lambda d: d.rename(columns={'weapon_id': 'id'}, inplace=False),
+#         lambda d: d.to_dict(orient='records'),
+#         tz.partial(map, lambda x: Weapon(**x)),
+#         list,
+#         lambda di: insert_many_generic(di),
+#     )
 def insert_target_type(target_type_df:DataFrame) -> None:
     return tz.pipe(
         target_type_df,
@@ -119,18 +119,20 @@ def insert_terror_attack(terror_attack_df:DataFrame) -> None:
         list,
         lambda di: insert_many_generic(di),
     )
-def insertion_postgres_coutnry_region_cities_terror_location():
+def insertion_postgres_country_region_cities_terror_location():
     df = main_flow_clean_csv()
     insert_region_table_to_postgres(normalize_region_table(df))
+    print("insert region table")
     df_country = insert_country_table_to_postgres(normalize_country_table(df))
+    print("insert country table")
     apply_country_id_on_main_csv(df, df_country)
     df_city = insert_city_table_to_postgres(normalize_city_table(df))
+    print("insert city table")
     apply_city_id_on_main_csv(df, df_city)
     df["city_id"] = df["city_id"].fillna(3).astype(int)
     terror_locations = normalize_terror_location_table(df)
-
-
     insert_terror_location_to_postgres(terror_locations)
+    print("insert terror_locations table")
     df_terror_location = terror_locations.dropna().dropna().drop_duplicates(subset=["city_id", "longitude", "latitude"], keep='first',inplace=False)
     apply_terror_location_id_on_main_csv(df, df_terror_location)
     return df
@@ -140,18 +142,24 @@ def insertion_postgres_coutnry_region_cities_terror_location():
 if __name__ == '__main__':
     init_db()
 
-    df = insertion_postgres_coutnry_region_cities_terror_location()
+    df = insertion_postgres_country_region_cities_terror_location()
     insert_attack_type(normalize_attack_type_table(df))
-    insert_weapon(normalize_weapon_table(df))
+    print("insert attack_type table")
+    # insert_weapon(normalize_weapon_table(df))
     insert_target_type(normalize_target_type_table(df))
+    print("insert target_type table")
     insert_group(normalize_group_table(df))
+    print("insert group table")
     insert_nationality(normalize_nationality_table(df))
+    print("insert nationality table")
     insert_terror_attack(normalize_terror_attack_table(df))
-    create_summery(
-        from_list_to_actions(
-            normalize_terror_attack_table(df)[['terror_attack_id', 'summary', 'Date']]
-            .dropna()
-            .assign(type='history')
-            .to_dict('records')
-        )
-    )
+    print("insert terror_attack table")
+    # create_summery(
+    #     from_list_to_actions(
+    #         normalize_terror_attack_table(df)[['terror_attack_id', 'summary', 'Date']]
+    #         .dropna()
+    #         .assign(type='history')
+    #         .to_dict('records')
+    #     )
+    # )
+    # print("insert summery to elastic")

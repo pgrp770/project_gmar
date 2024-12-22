@@ -25,7 +25,7 @@ def normalize_second_table_date(df: pd.DataFrame) -> pd.DataFrame:
 
 def rename_columns_second_table_for_merging(df: pd.DataFrame) -> pd.DataFrame:
     df.rename(columns={
-        'Date': 'Date',  # Match the new Date column in table1
+        'Date': 'Date',
         'City': 'city',
         'Country': 'country_txt',
         'Perpetrator': 'gname',
