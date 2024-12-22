@@ -2,37 +2,27 @@ import math
 from typing import List, Dict
 import pandas as pd
 
-from statistics_app.db.sql_db.repostiories.location_repository import *
-from statistics_app.db.sql_db.repostiories.terror_attack_repository import get_all_terror_attacks, get_deadliest_attack, \
-    get_average_casualties_query, get_top_5_groups_by_attacks_query, get_attack_change_percentage_by_region_query, \
-    get_most_active_groups_by_region_query, get_region_targets_intersection_query, \
-    get_groups_involved_in_same_attacks_query, get_shared_attack_strategies_by_region_query, \
-    get_high_intergroup_activity_by_region_query, get_similar_goals_timeline_by_group_query
-
-
-
-# 1
-def get_deadliest_attack_endpoint_service(limit:int) -> List[Dict]:
-    a = get_deadliest_attack()
-
-    a_grouped = a.groupby('attack_type', as_index=False).agg({'casualties': 'sum'})
-
-    a_sorted = a_grouped.sort_values(by='casualties', ascending=False)
-
-    return a_sorted.head(limit).to_dict('records')
-
+from statistics_app.db.sql_db.repostiories.terror_attack_repository import *
 
 
 def first_nonzero(series):
     non_zero_values = series[series != 0]
+
     return non_zero_values.iloc[0] if not non_zero_values.empty else 0
+
+
+# 1
+def get_deadliest_attack_endpoint_service(limit: int) -> List[Dict]:
+    df = get_deadliest_attack()
+    df_grouped = df.groupby('attack_type', as_index=False).agg({'casualties': 'sum'})
+    df_sorted = df_grouped.sort_values(by='casualties', ascending=False)
+
+    return df_sorted.head(limit).to_dict('records')
+
 
 # 2
 def get_average_casualties(target: str, limit: int) -> List[Dict]:
     df = get_average_casualties_query()
-    df = df.dropna(subset=["latitude", "longitude"])
-
-
     grouped = df.groupby(target).agg(
         casualties=("casualties", "sum"),
         latitude=("latitude", first_nonzero),
@@ -51,11 +41,11 @@ def get_average_casualties(target: str, limit: int) -> List[Dict]:
 
 # 3
 def get_top_5_groups_by_attacks():
-
     df = get_top_5_groups_by_attacks_query()
     group_fatalities = df.groupby('group')['casualties'].sum().reset_index()
     sorted_groups = group_fatalities.sort_values(by='casualties', ascending=False)
     return sorted_groups.to_dict('records')
+
 
 # 6
 def get_attack_change_percentage_by_region(limit=0):
@@ -78,7 +68,7 @@ def get_attack_change_percentage_by_region(limit=0):
         .groupby('region')
         .agg(
             first_casualties=('casualties', 'sum'),
-         )
+        )
         .reset_index()
     )
 
@@ -101,6 +91,7 @@ def get_attack_change_percentage_by_region(limit=0):
     result = result.head(limit) if limit > 0 else result
     return result.to_dict('records')
 
+
 # 8
 def get_most_active_groups_by_region():
     df = get_most_active_groups_by_region_query()
@@ -117,8 +108,8 @@ def get_most_active_groups_by_region():
 
     # Step 1: Count how many times each group was active in each region
 
-        # Step 1: Count how many times each group was active in each region
-        # and aggregate the latitude and longitude (we'll take the first non-null value for each region)
+    # Step 1: Count how many times each group was active in each region
+    # and aggregate the latitude and longitude (we'll take the first non-null value for each region)
     group_count = df.groupby(['region', 'group']).size().reset_index(name='count')
 
     # Step 2: Group by region and aggregate into a list of dictionaries for each region
@@ -140,7 +131,6 @@ def get_most_active_groups_by_region():
 
 # 11
 def get_region_targets_intersection(target):
-
     df = get_region_targets_intersection_query()
     print(df.columns.tolist())
     df_exploded = df.explode('group').explode('target_type')
@@ -160,6 +150,7 @@ def get_region_targets_intersection(target):
     shared_targets = grouped_by_region[grouped_by_region['groups'].apply(len) > 1]
 
     return shared_targets.to_dict('records')
+
 
 # 13
 def get_groups_involved_in_same_attacks():
@@ -196,6 +187,7 @@ def get_shared_attack_strategies_by_region(target):
 
     return result
 
+
 # 16
 def get_high_intergroup_activity_by_region(target: str):
     df = get_high_intergroup_activity_by_region_query()
@@ -204,7 +196,7 @@ def get_high_intergroup_activity_by_region(target: str):
 
     group_count.columns = [target, 'unique_group_count']
 
-    lat_lon = df.groupby([target]).agg({'latitude':first_nonzero, 'longitude': first_nonzero}).reset_index()
+    lat_lon = df.groupby([target]).agg({'latitude': first_nonzero, 'longitude': first_nonzero}).reset_index()
 
     result = pd.merge(group_count, lat_lon, on=target)
 
@@ -234,7 +226,6 @@ def get_similar_goals_timeline_by_group():
     return same_target_groups.to_dict('records')
 
 
-
 if __name__ == '__main__':
     pass
     # print(get_similar_goals_timeline_by_group()) # 19
@@ -242,7 +233,7 @@ if __name__ == '__main__':
     # print(get_shared_attack_strategies_by_region("region")) # 14
     # print(get_groups_involved_in_same_attacks()) # 13
     # print(get_region_targets_intersection("country")) # 11
-    print(get_most_active_groups_by_region()) # 8
+    print(get_most_active_groups_by_region())  # 8
     # print(get_attack_change_percentage_by_region(5))# 6
     # print(get_top_5_groups_by_attacks()) # 3
     # print(get_average_casualties("region", 5)) # 2
