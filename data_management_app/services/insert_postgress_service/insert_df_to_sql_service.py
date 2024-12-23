@@ -1,12 +1,6 @@
-from pandas import DataFrame
-import toolz as tz
-
-from data_management_app.db.elastic_db.repositories.summery_repository import create_summery
 from data_management_app.db.sql_db.database import init_db
-from data_management_app.db.sql_db.models import Region, Country, City, TerrorLocation, AttackType, Weapon, TargetType, \
-    Group, Nationality, TerrorAttack
+from data_management_app.db.sql_db.models import *
 from data_management_app.db.sql_db.repositories.postgres_repository.postgres_crud import insert_many_generic
-from data_management_app.services.insert_elastic_service.insert_summery_service import from_list_to_actions
 from data_management_app.services.normalize_data_srevices.retype_and_clean_csv_service import main_flow_clean_csv
 from data_management_app.services.normalize_data_srevices.split_big_csv_to_tables import *
 from data_management_app.utils.pandas_utils import *
@@ -54,23 +48,16 @@ def insert_city_table_to_postgres(df_city: DataFrame) -> DataFrame:
 
 def insert_terror_location_to_postgres(df_terror_location: DataFrame) -> None:
     return tz.pipe(
-        df_terror_location.dropna().dropna().drop_duplicates(subset=["city_id", "longitude", "latitude"], keep='first',inplace=False),lambda d: d.rename(columns={'terror_location_id': 'id'}, inplace=False),lambda d: d.to_dict(orient='records'),
+        df_terror_location.dropna().dropna().drop_duplicates(subset=["city_id", "longitude", "latitude"], keep='first',
+                                                             inplace=False),
+        lambda d: d.rename(columns={'terror_location_id': 'id'}, inplace=False), lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: TerrorLocation(**x)),
         list,
         lambda di: insert_many_generic(di),
     )
 
 
-# def insert_weapon(weapon_df:DataFrame) -> None:
-#     return tz.pipe(
-#         weapon_df,
-#         lambda d: d.rename(columns={'weapon_id': 'id'}, inplace=False),
-#         lambda d: d.to_dict(orient='records'),
-#         tz.partial(map, lambda x: Weapon(**x)),
-#         list,
-#         lambda di: insert_many_generic(di),
-#     )
-def insert_target_type(target_type_df:DataFrame) -> None:
+def insert_target_type(target_type_df: DataFrame) -> None:
     return tz.pipe(
         target_type_df,
         lambda d: d.rename(columns={'target_type_id': 'id'}, inplace=False),
@@ -79,7 +66,9 @@ def insert_target_type(target_type_df:DataFrame) -> None:
         list,
         lambda di: insert_many_generic(di),
     )
-def insert_group(attack_df:DataFrame) -> None:
+
+
+def insert_group(attack_df: DataFrame) -> None:
     return tz.pipe(
         attack_df,
         lambda d: d.rename(columns={'group_id': 'id'}, inplace=False),
@@ -88,7 +77,9 @@ def insert_group(attack_df:DataFrame) -> None:
         list,
         lambda di: insert_many_generic(di),
     )
-def insert_nationality(attack_df:DataFrame) -> None:
+
+
+def insert_nationality(attack_df: DataFrame) -> None:
     return tz.pipe(
         attack_df,
         lambda d: d.rename(columns={'nationality_id': 'id'}, inplace=False),
@@ -98,27 +89,32 @@ def insert_nationality(attack_df:DataFrame) -> None:
         lambda di: insert_many_generic(di),
     )
 
-def insert_attack_type(attack_type_df:DataFrame) -> None:
+
+def insert_attack_type(attack_type_df: DataFrame) -> None:
     return tz.pipe(
         attack_type_df,
-        lambda d: d.rename(columns={'attack_type_id':'id'}, inplace=False),
+        lambda d: d.rename(columns={'attack_type_id': 'id'}, inplace=False),
         lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: AttackType(**x)),
         list,
         lambda di: insert_many_generic(di),
     )
 
-def insert_terror_attack(terror_attack_df:DataFrame) -> None:
-    terror_attack_df.fillna({"terror_location_id":0})
+
+def insert_terror_attack(terror_attack_df: DataFrame) -> None:
+    terror_attack_df.fillna({"terror_location_id": 0})
     terror_attack_df['terror_location_id'] = terror_attack_df['terror_location_id'].astype(int)
     return tz.pipe(
         terror_attack_df,
-        lambda d: d.rename(columns={'Date':'date', 'nkill': 'kills', 'nwound': 'wounds', 'nperps':'terrorist_amount', "terror_attack_id": 'id'}, inplace=False),
+        lambda d: d.rename(columns={'Date': 'date', 'nkill': 'kills', 'nwound': 'wounds', 'nperps': 'terrorist_amount',
+                                    "terror_attack_id": 'id'}, inplace=False),
         lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: TerrorAttack(**x)),
         list,
         lambda di: insert_many_generic(di),
     )
+
+
 def insertion_postgres_country_region_cities_terror_location():
     df = main_flow_clean_csv()
     insert_region_table_to_postgres(normalize_region_table(df))
@@ -133,19 +129,17 @@ def insertion_postgres_country_region_cities_terror_location():
     terror_locations = normalize_terror_location_table(df)
     insert_terror_location_to_postgres(terror_locations)
     print("insert terror_locations table")
-    df_terror_location = terror_locations.dropna().dropna().drop_duplicates(subset=["city_id", "longitude", "latitude"], keep='first',inplace=False)
+    df_terror_location = terror_locations.dropna().dropna().drop_duplicates(subset=["city_id", "longitude", "latitude"],
+                                                                            keep='first', inplace=False)
     apply_terror_location_id_on_main_csv(df, df_terror_location)
     return df
 
 
-
-if __name__ == '__main__':
+def main_flow_insert_tables():
     init_db()
-
     df = insertion_postgres_country_region_cities_terror_location()
     insert_attack_type(normalize_attack_type_table(df))
     print("insert attack_type table")
-    # insert_weapon(normalize_weapon_table(df))
     insert_target_type(normalize_target_type_table(df))
     print("insert target_type table")
     insert_group(normalize_group_table(df))
@@ -163,3 +157,7 @@ if __name__ == '__main__':
     #     )
     # )
     # print("insert summery to elastic")
+
+
+if __name__ == '__main__':
+    main_flow_insert_tables()

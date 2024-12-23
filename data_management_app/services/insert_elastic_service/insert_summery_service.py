@@ -1,8 +1,7 @@
-from dataclasses import asdict
 from typing import List
 
 
-def from_list_to_actions(summeries:List[dict]) -> List[dict]:
+def from_list_to_actions(summeries: List[dict]) -> List[dict]:
     return [
         {
             "_index": "summeries",
@@ -10,4 +9,3 @@ def from_list_to_actions(summeries:List[dict]) -> List[dict]:
         }
         for summery in summeries
     ]
-

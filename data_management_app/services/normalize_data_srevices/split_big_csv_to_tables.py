@@ -5,7 +5,8 @@ from data_management_app.utils.pandas_utils import *
 
 
 def normalize_terror_attack_table(df: DataFrame) -> DataFrame:
-    return create_sub_table(df, ["Date", "nkill", "nwound", "nperps", "summary", "terror_attack_id", "terror_location_id"])
+    return create_sub_table(df,
+                            ["Date", "nkill", "nwound", "nperps", "summary", "terror_attack_id", "terror_location_id"])
 
 
 def normalize_region_table(df: DataFrame) -> pd.DataFrame:
@@ -39,23 +40,6 @@ def normalize_attack_type_table(df: DataFrame) -> DataFrame:
         ], "name"),
         lambda x: create_ids(x, "attack_type"),
     )
-
-
-# def normalize_weapon_table(df: DataFrame) -> DataFrame:
-#     return tz.pipe(
-#         combine_columns(df, [
-#             "weaptype1_txt",
-#             "weapsubtype1_txt",
-#             "weaptype2_txt",
-#             "weapsubtype2_txt",
-#             "weaptype3_txt",
-#             "weapsubtype3_txt",
-#             "weaptype4_txt",
-#             "weapsubtype4_txt",
-#
-#         ], "name"),
-#         lambda x: create_ids(x, "weapon"),
-#     )
 
 
 def normalize_target_type_table(df: DataFrame) -> DataFrame:
@@ -97,7 +81,6 @@ def normalize_group_table(df: DataFrame) -> DataFrame:
 
 
 def apply_city_id_on_main_csv(df: DataFrame, cities: DataFrame) -> DataFrame:
-
     map_id_cities = map_id(cities, "city", "city")
     return add_id_column_to_table_with_map(df, map_id_cities, "city", "city")
 
@@ -106,11 +89,6 @@ def apply_terror_location_id_on_main_csv(df: DataFrame, terror_location: DataFra
     map_id_terror_location = map_id(terror_location, ["city_id", "longitude", "latitude"], "terror_location")
     return add_id_columns_to_table_with_map(df, map_id_terror_location, ["city_id", "longitude", "latitude"],
                                             "terror_location")
-
-
-# def apply_attack_type_id_on_main_csv(df: DataFrame, attack_type: DataFrame) -> DataFrame:
-#     map_id_terror_location = map_id(attack_type, "attack_type", "attack_type")
-#     return add_id_column_to_table_with_map(df, map_id_terror_location, "name", "attack_type")
 
 
 def apply_groups_id_on_main_csv(df: DataFrame, groups: DataFrame) -> DataFrame:
