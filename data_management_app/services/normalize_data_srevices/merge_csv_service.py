@@ -1,6 +1,6 @@
 import pandas as pd
 import toolz as tz
-from config.root_dir import CSV_DATA_MAIN_TABLE, CSV_DATA_SECOND_TABLE
+from data_management_app.config.root_dir import CSV_DATA_MAIN_TABLE, CSV_DATA_SECOND_TABLE
 from data_management_app.utils.pandas_utils import read_from_csv
 
 

@@ -1,6 +1,6 @@
 import pytest
 
-from config.root_dir import CSV_DATA_MAIN_TABLE
+from data_management_app.config.root_dir import CSV_DATA_MAIN_TABLE
 from data_management_app.services.normalize_data_srevices.split_big_csv_to_tables import *
 from data_management_app.utils.pandas_utils import *
 
