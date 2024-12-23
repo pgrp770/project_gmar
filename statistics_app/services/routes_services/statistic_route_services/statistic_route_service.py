@@ -164,17 +164,3 @@ def get_similar_goals_timeline_by_group():
                .reset_index())
     same_target_groups = grouped[grouped['groups'].apply(lambda x: len(x) > 1)]
     return same_target_groups.to_dict('records')
-
-
-if __name__ == '__main__':
-    pass
-    # print(get_similar_goals_timeline_by_group()) # 19
-    # print(get_high_intergroup_activity_by_region("region")) # 16
-    # print(get_shared_attack_strategies_by_region("country")) # 14
-    # print(get_groups_involved_in_same_attacks()) # 13
-    # print(get_region_targets_intersection("country")) # 11
-    # print(get_most_active_groups_by_region())  # 8
-    # print(get_attack_change_percentage_by_region(5))# 6
-    # print(get_top_5_groups_by_attacks()) # 3
-    # print(get_average_casualties("region", 5)) # 2
-    # print(get_deadliest_attack_endpoint_service(5)) # 1

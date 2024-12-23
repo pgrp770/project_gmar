@@ -16,7 +16,6 @@ def get_deadliest_attack_endpoint():
         return jsonify({'message': str(e)}), 500
 
 
-
 # e_2
 # @statistic_bluprint.route('/average-casualties-by/<string:target>', methods=['GET'])
 # def get_average_casualties_by_region_endpoint(target):
@@ -35,8 +34,6 @@ def get_average_casualties_by_region_endpoint(target):
         return response
     except Exception as e:
         return jsonify({'message': str(e)}), 500
-
-
 
 
 # e_3
