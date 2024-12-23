@@ -1,22 +1,23 @@
 from text_search_app.db.elastic_db.database import elastic_client
+import toolz as tz
 
 
 def search_by_words(index, search_words):
-
-
-
     query = {
         "query": {
             "match": {
-                "summary": search_words  # Search the 'summary' field for the words
+                "content": search_words
             }
         }
     }
 
-    # Perform the search
     response = elastic_client.search(index=index, body=query)
 
-    return response['hits']['hits']
+    return tz.pipe(
+        response['hits']['hits'],
+        tz.partial(map, lambda x: x['_source']),
+        list)
+
 
 def search_by_summary_and_date(index, search_words, start_date, end_date):
     query = {
@@ -25,14 +26,14 @@ def search_by_summary_and_date(index, search_words, start_date, end_date):
                 "must": [
                     {
                         "match": {
-                            "summary": search_words
+                            "content": search_words
                         }
                     }
                 ],
                 "filter": [
                     {
                         "range": {
-                            "Date": {
+                            "date": {
                                 "gte": start_date,
                                 "lte": end_date
                             }
@@ -45,36 +46,42 @@ def search_by_summary_and_date(index, search_words, start_date, end_date):
 
     response = elastic_client.search(index=index, body=query)
 
-    return response['hits']['hits']
+    return tz.pipe(
+        response['hits']['hits'],
+        tz.partial(map, lambda x: x['_source']),
+        list)
 
 
-def search_by_type(index, search_words, type):
+def search_by_type(index, search_words, typo):
     query = {
         "query": {
             "bool": {
                 "must": [
                     {
                         "match": {
-                            "summary": search_words
+                            "content": {
+                                "query": search_words,
+                                "fuzziness": "AUTO"  # Adjust fuzziness level as needed
+                            }
                         }
                     },
                     {
-                        "match":{
-                            "type": type
+                        "term": {
+                            "category.keyword": typo
                         }
                     }
-                ],
-
+                ]
             }
         }
     }
 
     response = elastic_client.search(index=index, body=query)
 
-    return response['hits']['hits']
+    return tz.pipe(
+        response['hits']['hits'],
+        tz.partial(map, lambda x: x['_source']),
+        list)
+
 
 if __name__ == '__main__':
-
-    # print(list(map(lambda x: x['_source'], search_by_words(index="summeris", search_words="Store"))))
-    # print(list(map(lambda x: x['_source'], search_by_summary_and_date(index="summeris", search_words="Store", start_date="1970-01-09", end_date="1970-01-12"))))
-    print(list(map(lambda x: x['_source'], search_by_type(index="summeris", search_words="Store", type="history"))))
+    print(search_by_type("summeris", "Asia's", "historical terror attack"))

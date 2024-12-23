@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Summaries</title>
+</head>
+<body>
+    <h1>Search Summaries by Keywords</h1>
+    <form id="searchForm">
+        <label for="keywords">Enter Keywords:</label>
+        <input type="text" id="keywords" name="keywords" placeholder="Type keywords here..." required>
+        <button type="button" onclick="submitSearch()">Search</button>
+    </form>
+
+    <h1>Search Historic Summaries by Keywords</h1>
+    <form id="searchFormHistoric">
+        <label for="keywords">Enter Keywords:</label>
+        <input type="text" id="keywordsHistoric" name="keywords" placeholder="Type keywords here..." required>
+        <button type="button" onclick="submitSearchHistoric()">Search</button>
+    </form>
+
+    <h1>Search Nowadays Summaries by Keywords</h1>
+    <form id="searchFormNowadays">
+        <label for="keywords">Enter Keywords:</label>
+        <input type="text" id="keywordsNowadays" name="keywords" placeholder="Type keywords here..." required>
+        <button type="button" onclick="submitSearchNowadays()">Search</button>
+    </form>
+
+    <h1>Search  by Keywords adn dates</h1>
+    <form id="searchFormDates">
+        <label for="keywords">Enter Keywords:</label>
+        <input type="text" id="keywordsDates" name="keywords" placeholder="Type keywords here..." required>
+        <input type="text" id="fromDates" name="formDate" placeholder="Type from date here..." required>
+        <input type="text" id="toDates" name="TillDate" placeholder="Type till date here..." required>
+        <button type="button" onclick="submitSearchDates()">Search</button>
+    </form>
+
+
+
+
+    <h2>Result:</h2>
+    <iframe id="resultFrame" width="100%" height="500px" style="border: 1px solid #ccc;"></iframe>
+
+
+
+    <script>
+        function submitSearch() {
+            const keywords = document.getElementById('keywords').value.trim();
+            if (!keywords) {
+                alert('Please enter keywords!');
+                return;
+            }
+            const encodedKeywords = encodeURIComponent(keywords);
+            const url = `http://127.0.0.1:5002/api/summery_search/${encodedKeywords}`;
+
+            // Set the iframe source to the constructed URL
+            document.getElementById('resultFrame').src = url;
+        }
+         function submitSearchHistoric() {
+            const keywords = document.getElementById('keywordsHistoric').value.trim();
+            if (!keywords) {
+                alert('Please enter keywords!');
+                return;
+            }
+            const encodedKeywords = encodeURIComponent(keywords);
+            const url = `http://127.0.0.1:5002/api/summery_search/historic/${encodedKeywords}`;
+
+            // Set the iframe source to the constructed URL
+            document.getElementById('resultFrame').src = url;
+        }
+         function submitSearchNowadays() {
+            const keywords = document.getElementById('keywordsNowadays').value.trim();
+            if (!keywords) {
+                alert('Please enter keywords!');
+                return;
+            }
+            const encodedKeywords = encodeURIComponent(keywords);
+            const url = `http://127.0.0.1:5002/api/summery_search/nowadays/${encodedKeywords}`;
+
+            // Set the iframe source to the constructed URL
+            document.getElementById('resultFrame').src = url;
+        }
+        function submitSearchDates() {
+            const keywords = document.getElementById('keywordsDates').value.trim();
+            const fromDate = document.getElementById('fromDates').value.trim();
+            const tillDate = document.getElementById('toDates').value.trim();
+            if (!keywords) {
+                alert('Please enter keywords!');
+                return;
+            }
+            const encodedKeywords = encodeURIComponent(keywords);
+            const encodedFromDate = encodeURIComponent(fromDate);
+            const encodedTillDate = encodeURIComponent(tillDate);
+            const url = `http://127.0.0.1:5002/api/summery_search/dates/${encodedFromDate}/${encodedTillDate}/${encodedKeywords}`;
+
+            // Set the iframe source to the constructed URL
+            document.getElementById('resultFrame').src = url;
+        }
+    </script>
+</body>
+</html>
