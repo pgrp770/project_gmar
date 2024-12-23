@@ -25,13 +25,11 @@ def analyze_one_article(article: dict):
             "longitude": location_dict["longitude"],
         }
     except Exception as e:
-        print(e)
-        return None
+        print(str(e))
 
 
 def analyze_all_articles(articles):
     return tz.pipe(
-        # main()['articles']['results'],
         articles,
         tz.partial(map, analyze_one_article),
         tz.partial(filter, lambda x: bool(x)),
