@@ -3,7 +3,9 @@ from news_analize_app.api.groq_api import post_groq_api
 import toolz as tz
 
 from news_analize_app.api.news_api import main
+from news_analize_app.db.elastic_db.repositories.generic_functions import create_butch
 from news_analize_app.services.coordinates_services import get_lat_lon_from_address
+from news_analize_app.services.elastic_service.butch_service import from_list_to_actions
 from news_analize_app.utils.validation_utils import validate_groq_json, validate_keys
 
 
@@ -37,7 +39,12 @@ def analyze_all_articles():
         list
     )
 
+def insert_articles_to_elastic():
+    tz.pipe(
+        analyze_all_articles(),
+        from_list_to_actions,
+        create_butch
+    )
 
 if __name__ == '__main__':
-    result = analyze_all_articles()
-    print(result)
+    insert_articles_to_elastic()
