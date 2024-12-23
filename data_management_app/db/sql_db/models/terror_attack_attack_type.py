@@ -1,11 +1,10 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from data_management_app.db.sql_db.models import Base
 
 
 class TerrorAttackAttackType(Base):
-
     __tablename__ = 'terror_attack_attack_type_relations'
 
     id = Column(Integer, primary_key=True)
