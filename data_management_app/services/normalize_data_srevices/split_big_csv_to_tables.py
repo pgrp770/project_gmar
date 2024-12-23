@@ -6,7 +6,7 @@ from data_management_app.utils.pandas_utils import *
 
 def normalize_terror_attack_table(df: DataFrame) -> DataFrame:
     return create_sub_table(df,
-                            ["Date", "nkill", "nwound", "nperps", "summary", "terror_attack_id", "terror_location_id"])
+                            ["date", "nkill", "nwound", "nperps", "summary", "terror_attack_id", "terror_location_id"])
 
 
 def normalize_region_table(df: DataFrame) -> pd.DataFrame:

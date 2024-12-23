@@ -43,8 +43,3 @@ def main_flow_clean_csv():
         retype_ids_to_int,
         add_terror_attack_id_to_df
     )
-
-
-if __name__ == '__main__':
-    df = main_flow_clean_csv()
-    print(df)

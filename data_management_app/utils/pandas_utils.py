@@ -4,7 +4,7 @@ import toolz as t
 import pandas as pd
 
 
-def read_from_csv(path: str) -> pd.DataFrame:
+def read_from_csv_to_df(path: str) -> pd.DataFrame:
     return pd.read_csv(path, encoding="latin1")
 
 
@@ -18,7 +18,7 @@ def fill_empty_cells(fillna_dict: Dict, df):
 
 def flow_first_normalize(path: str, empty_columns: List = [], fillna_dict: Dict = {}) -> pd.DataFrame:
     return t.pipe(
-        read_from_csv(path),
+        read_from_csv_to_df(path),
         t.partial(remove_row_by_empty_columns, empty_columns),
         t.partial(fill_empty_cells, fillna_dict)
     )

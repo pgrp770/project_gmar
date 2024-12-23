@@ -1,5 +1,5 @@
 columns = [
-    "Date",
+    "date",
     "country",
     "country_txt",
     "region",
