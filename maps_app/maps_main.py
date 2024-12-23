@@ -1,13 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask
+
+from maps_app.routes.map_route import maps_blueprint
 
 app = Flask(__name__)
 
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-@app.route('/1')
-def index1():
-    return render_template('index_1.html')
+app.register_blueprint(maps_blueprint)
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
