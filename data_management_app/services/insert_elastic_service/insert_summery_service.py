@@ -2,12 +2,12 @@ from dataclasses import asdict
 from typing import List
 
 
-def from_list_to_actions(sumeries:List[dict]) -> List[dict]:
+def from_list_to_actions(summeries:List[dict]) -> List[dict]:
     return [
         {
-            "_index": "summeris",
+            "_index": "summeries",
             "_source": summery
         }
-        for summery in sumeries
+        for summery in summeries
     ]
 
