@@ -22,17 +22,6 @@ def get_column_with_attack_id(column: str, row, new_column):
     return {"attack_id": row["attack_id"], new_column: row[column]}
 
 
-def get_weapon_models_from_row(columns: List[str], row, map_id):
-    return tz.pipe(
-        [row[name] for name in columns],
-        set,
-        tz.partial(filter, lambda x: x != "Unknown"),
-        tz.partial(map, lambda x: {"weapon_id": map_id[x], "terror_attack_id": row["terror_attack_id"]}),
-        tz.partial(map, lambda x: TerrorAttackWeapon(**x)),
-        list
-    )
-
-
 def get_attack_type_models_from_row(columns: List[str], row, map_id):
     return tz.pipe(
         [row[name] for name in columns],
@@ -77,8 +66,7 @@ def get_nationality_models_from_row(columns: List[str], row, map_id):
     )
 
 
-if __name__ == '__main__':
-
+def main_flow_insert_connection_tables():
     attack_type_map_id = get_map_id_from_models(AttackType)
     print("map attack_type")
     target_type_map_id = get_map_id_from_models(TargetType)
@@ -92,7 +80,6 @@ if __name__ == '__main__':
     terror_attack_target_type = []
     terror_attack_group = []
     terror_attack_nationality = []
-    terror_attack_terror_location = []
 
     for row in df:
         terror_attack_attack_type += get_attack_type_models_from_row(assets.attack_type_column, row, attack_type_map_id)
@@ -100,10 +87,6 @@ if __name__ == '__main__':
         terror_attack_group += get_group_models_from_row(assets.group_column, row, group_map_id)
         terror_attack_nationality += get_nationality_models_from_row(assets.nationality_column, row, nationality_map_id)
 
-    terror_attack_terror_location = tz.pipe(
-        terror_attack_terror_location,
-        tz.partial(filter, lambda x: x.terror_location_id != "Unknown"),
-    )
     a = [terror_attack_attack_type, terror_attack_target_type, terror_attack_group,
          terror_attack_nationality]
     for models in a:

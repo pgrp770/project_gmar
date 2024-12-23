@@ -157,7 +157,3 @@ def main_flow_insert_tables():
     #     )
     # )
     # print("insert summery to elastic")
-
-
-if __name__ == '__main__':
-    main_flow_insert_tables()
