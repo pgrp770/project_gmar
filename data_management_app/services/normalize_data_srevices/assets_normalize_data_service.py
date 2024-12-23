@@ -32,7 +32,7 @@ fillna_columns_with_empty_string = [
     "region_txt"
 ]
 
-fillna_columns_with_unknown = {
+fillna_columns = {
     "targtype1_txt": "Unknown",
     "targtype2_txt": "Unknown",
     "targtype3_txt": "Unknown",
@@ -50,12 +50,12 @@ fillna_columns_with_unknown = {
     "natlty3_txt": "Unknown",
     "latitude": 0,
     "longitude": 0,
+    "nkill": 0,
+    "nwound": 0,
+    "nperps": 0
 }
 
-fillna_columns_with_zero = [
+retype_id_to_int = [
     "country",
     "region",
-    "nkill",
-    "nwound",
-    "nperps"
 ]

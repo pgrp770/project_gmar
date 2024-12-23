@@ -40,3 +40,7 @@ def test_process_secondary_table():
     assert "Fatalities" not in result.columns
 
 
+def test_main_flow_merging():
+    result = main_flow_merging(CSV_DATA_MAIN_TABLE, CSV_DATA_SECOND_TABLE)
+    assert len(result.columns) == 137
+    assert len(result) == 6000

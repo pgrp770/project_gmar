@@ -56,11 +56,11 @@ def process_secondary_table(path: str) -> pd.DataFrame:
     )
 
 
-def main_flow_merging() -> pd.DataFrame:
+def main_flow_merging(path_main_table: str, path_second_table: str) -> pd.DataFrame:
     return pd.concat(
         [
-            process_main_table(CSV_DATA_MAIN_TABLE),
-            process_secondary_table(CSV_DATA_SECOND_TABLE)
+            process_main_table(path_main_table),
+            process_secondary_table(path_second_table)
         ],
         ignore_index=True
     )
