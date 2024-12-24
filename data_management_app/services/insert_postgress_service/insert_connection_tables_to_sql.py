@@ -7,10 +7,7 @@ import data_management_app.services.insert_postgress_service.assets_insert_postg
 from data_management_app.services.normalize_data_srevices.retype_and_clean_csv_service import main_flow_clean_csv
 import toolz as tz
 
-
-def get_map_id_from_models(model):
-    l = get_all_generic(model)
-    return {model.name: model.id for model in l}
+from data_management_app.utils.postgres_utils import get_map_id_from_models
 
 
 def get_map_id_from_terror_location():

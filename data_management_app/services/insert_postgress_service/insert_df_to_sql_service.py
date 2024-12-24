@@ -4,11 +4,12 @@ from data_management_app.db.sql_db.repositories.postgres_repository.postgres_cru
 from data_management_app.services.normalize_data_srevices.retype_and_clean_csv_service import main_flow_clean_csv
 from data_management_app.services.normalize_data_srevices.split_big_csv_to_tables import *
 from data_management_app.utils.pandas_utils import *
+from pandas import DataFrame
 
 
 def insert_region_table_to_postgres(df_region: DataFrame) -> None:
     df_region = pd.concat([df_region, pd.DataFrame({'region': [0], 'region_txt': ['Unknown']})], ignore_index=True)
-    return t.pipe(
+    return tz.pipe(
         df_region.dropna().drop_duplicates(subset=None, keep='first', inplace=False),
         lambda df: df.rename(columns={'region': 'id', 'region_txt': 'name'}, inplace=False),
         lambda df: df.to_dict(orient='records'),
@@ -19,22 +20,20 @@ def insert_region_table_to_postgres(df_region: DataFrame) -> None:
 
 
 def insert_country_table_to_postgres(df_country: DataFrame) -> DataFrame:
-    df = df_country.dropna().dropna().drop_duplicates(subset="country_txt", keep='first', inplace=False)
-    df['id'] = range(1, len(df) + 1)
     tz.pipe(
-        df.copy(),
+        df_country.copy(),
         lambda d: d.rename(columns={'region': 'region_id', 'country_txt': 'name'}, inplace=False),
         lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: Country(**x)),
         list,
         lambda di: insert_many_generic(di),
     )
-    return df.rename(columns={'id': 'country_id'})
+    return df_country.rename(columns={'id': 'country_id'})
 
 
 # apply_city_id_on_main_csv,
 def insert_city_table_to_postgres(df_city: DataFrame) -> DataFrame:
-    df = df_city.dropna().dropna().drop_duplicates(subset="city", keep='first', inplace=False)
+    df = df_city.dropna().drop_duplicates(subset="city", keep='first', inplace=False)
     tz.pipe(
         df.copy(),
         lambda d: d.rename(columns={'city': 'name', 'city_id': 'id'}, inplace=False),
@@ -48,8 +47,8 @@ def insert_city_table_to_postgres(df_city: DataFrame) -> DataFrame:
 
 def insert_terror_location_to_postgres(df_terror_location: DataFrame) -> None:
     return tz.pipe(
-        df_terror_location.dropna().dropna().drop_duplicates(subset=["city_id", "longitude", "latitude"], keep='first',
-                                                             inplace=False),
+        df_terror_location.dropna().drop_duplicates(subset=["city_id", "longitude", "latitude"], keep='first',
+                                                    inplace=False),
         lambda d: d.rename(columns={'terror_location_id': 'id'}, inplace=False), lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: TerrorLocation(**x)),
         list,
@@ -115,7 +114,8 @@ def insert_terror_attack(terror_attack_df: DataFrame) -> None:
     )
 
 
-def insertion_postgres_country_region_cities_terror_location():
+def main_flow_insert_tables():
+    init_db()
     df = main_flow_clean_csv()
     insert_region_table_to_postgres(normalize_region_table(df))
     print("insert region table")
@@ -129,15 +129,7 @@ def insertion_postgres_country_region_cities_terror_location():
     terror_locations = normalize_terror_location_table(df)
     insert_terror_location_to_postgres(terror_locations)
     print("insert terror_locations table")
-    df_terror_location = terror_locations.dropna().dropna().drop_duplicates(subset=["city_id", "longitude", "latitude"],
-                                                                            keep='first', inplace=False)
-    apply_terror_location_id_on_main_csv(df, df_terror_location)
-    return df
-
-
-def main_flow_insert_tables():
-    init_db()
-    df = insertion_postgres_country_region_cities_terror_location()
+    apply_terror_location_id_on_main_csv(df, terror_locations)
     insert_attack_type(normalize_attack_type_table(df))
     print("insert attack_type table")
     insert_target_type(normalize_target_type_table(df))
