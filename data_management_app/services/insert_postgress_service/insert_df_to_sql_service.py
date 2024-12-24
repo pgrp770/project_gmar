@@ -8,7 +8,6 @@ from pandas import DataFrame
 
 
 def prepare_region_list_to_insert(df_region: DataFrame) -> List[dict]:
-    print("inserting region table")
     return tz.pipe(
         df_region,
         lambda df: df.rename(columns={'region': 'id', 'region_txt': 'name'}, inplace=False),
@@ -19,7 +18,6 @@ def prepare_region_list_to_insert(df_region: DataFrame) -> List[dict]:
 
 
 def insert_country_table_to_postgres(df_country: DataFrame) -> DataFrame:
-    print("insert country table")
     tz.pipe(
         df_country.copy(),
         lambda df: df.rename(columns={'region': 'region_id', 'country_txt': 'name'}, inplace=False),
@@ -32,8 +30,6 @@ def insert_country_table_to_postgres(df_country: DataFrame) -> DataFrame:
 
 
 def insert_city_table_to_postgres(df_city: DataFrame) -> DataFrame:
-    print("insert city table")
-
     tz.pipe(
         df_city.copy(),
         lambda d: d.rename(columns={'city': 'name', 'city_id': 'id'}, inplace=False),
@@ -46,7 +42,6 @@ def insert_city_table_to_postgres(df_city: DataFrame) -> DataFrame:
 
 
 def insert_terror_location_to_postgres(df_terror_location: DataFrame) -> List[Dict]:
-    print("insert terror_locations table")
     return tz.pipe(
         df_terror_location.dropna().drop_duplicates(subset=["city_id", "longitude", "latitude"], keep='first',
                                                     inplace=False),
@@ -57,7 +52,6 @@ def insert_terror_location_to_postgres(df_terror_location: DataFrame) -> List[Di
 
 
 def insert_target_type(target_type_df: DataFrame) -> List[Dict]:
-    print("insert target_type table")
     return tz.pipe(
         target_type_df,
         lambda d: d.rename(columns={'target_type_id': 'id'}, inplace=False),
@@ -68,7 +62,6 @@ def insert_target_type(target_type_df: DataFrame) -> List[Dict]:
 
 
 def insert_group(attack_df: DataFrame) -> List[Dict]:
-    print("insert group table")
     return tz.pipe(
         attack_df,
         lambda d: d.rename(columns={'group_id': 'id'}, inplace=False),
@@ -79,7 +72,6 @@ def insert_group(attack_df: DataFrame) -> List[Dict]:
 
 
 def insert_nationality(attack_df: DataFrame) -> List[Dict]:
-    print("insert nationality table")
     return tz.pipe(
         attack_df,
         lambda d: d.rename(columns={'nationality_id': 'id'}, inplace=False),
@@ -90,7 +82,6 @@ def insert_nationality(attack_df: DataFrame) -> List[Dict]:
 
 
 def insert_attack_type(attack_type_df: DataFrame) -> List[Dict]:
-    print("insert attack_type table")
     return tz.pipe(
         attack_type_df,
         lambda d: d.rename(columns={'attack_type_id': 'id'}, inplace=False),
@@ -101,7 +92,6 @@ def insert_attack_type(attack_type_df: DataFrame) -> List[Dict]:
 
 
 def insert_terror_attack(terror_attack_df: DataFrame) -> List[Dict]:
-    print("insert terror_attack table")
     terror_attack_df.fillna({"terror_location_id": 0})
     terror_attack_df['terror_location_id'] = terror_attack_df['terror_location_id'].astype(int)
     return tz.pipe(
