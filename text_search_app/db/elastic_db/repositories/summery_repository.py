@@ -19,6 +19,7 @@ def search_by_category(index, search_words, category):
     return tz.pipe(
         response['hits']['hits'],
         tz.partial(map, lambda x: x['_source']),
+        tz.partial(filter, lambda x: not(x['latitude'] == 0 and x['longitude'] == 0)),
         list)
 
 
@@ -29,3 +30,7 @@ def search_by_summary_and_date(index, search_words, start_date, end_date):
         response['hits']['hits'],
         tz.partial(map, lambda x: x['_source']),
         list)
+
+
+if __name__ == '__main__':
+    print(len(search_by_category("summeries", "an", "historical terror attack")))

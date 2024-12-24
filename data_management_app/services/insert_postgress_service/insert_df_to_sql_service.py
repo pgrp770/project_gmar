@@ -1,6 +1,8 @@
+from data_management_app.db.elastic_db.repositories.summery_repository import create_bulk
 from data_management_app.db.sql_db.database import init_db
 from data_management_app.db.sql_db.models import *
 from data_management_app.db.sql_db.repositories.postgres_repository.postgres_crud import insert_many_generic
+from data_management_app.services.insert_elastic_service.bulk_service import from_list_to_actions_with_chunks
 from data_management_app.services.normalize_data_srevices.retype_and_clean_csv_service import main_flow_clean_csv
 from data_management_app.services.normalize_data_srevices.split_big_csv_to_tables import *
 from data_management_app.utils.pandas_utils import *
@@ -120,12 +122,15 @@ def main_flow_insert_tables():
     insert_many_generic(insert_group(normalize_group_table(df)))
     insert_many_generic(insert_nationality(normalize_nationality_table(df)))
     insert_many_generic(insert_terror_attack(normalize_terror_attack_table(df)))
-    # create_summery(
-    #     from_list_to_actions(
-    #         normalize_terror_attack_table(df)[['terror_attack_id', 'summary', 'Date']]
-    #         .dropna()
-    #         .assign(type='history')
-    #         .to_dict('records')
-    #     )
-    # )
-    # print("insert summery to elastic")
+    [create_bulk(action_list)
+
+     for action_list in from_list_to_actions_with_chunks(
+            'summeries',
+            df[['region_txt', 'country_txt', 'summary', 'date', 'latitude', 'longitude']]
+            .dropna(subset=['latitude', 'longitude'])
+            .rename(columns={'summary': 'content', 'region_txt':'region', 'country_txt':'country', 'date':'date'})
+            .assign(category='historical terror attack')
+            .to_dict('records')
+        )
+     ]
+

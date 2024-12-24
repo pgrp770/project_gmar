@@ -1,6 +1,6 @@
 import pytest
 
-from data_management_app.services.insert_elastic_service.bulk_service import from_list_to_actions
+from data_management_app.services.insert_elastic_service.bulk_service import from_list_to_actions_with_chunks
 
 
 @pytest.fixture(scope='module')
@@ -9,5 +9,5 @@ def actions():
 
 
 def test_from_list_to_actions(actions):
-    result = from_list_to_actions("test", actions)
+    result = from_list_to_actions_with_chunks("test", actions)
     assert all(action["_index"] == "test" for action in result)
