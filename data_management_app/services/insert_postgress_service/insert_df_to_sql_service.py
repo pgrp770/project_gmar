@@ -7,23 +7,23 @@ from data_management_app.utils.pandas_utils import *
 from pandas import DataFrame
 
 
-def insert_region_table_to_postgres(df_region: DataFrame) -> None:
-    df_region = pd.concat([df_region, pd.DataFrame({'region': [0], 'region_txt': ['Unknown']})], ignore_index=True)
+def prepare_region_list_to_insert(df_region: DataFrame) -> List[dict]:
+    print("inserting region table")
     return tz.pipe(
-        df_region.dropna().drop_duplicates(subset=None, keep='first', inplace=False),
+        df_region,
         lambda df: df.rename(columns={'region': 'id', 'region_txt': 'name'}, inplace=False),
         lambda df: df.to_dict(orient='records'),
         tz.partial(map, lambda x: Region(**x)),
-        list,
-        lambda di: insert_many_generic(di),
+        list
     )
 
 
 def insert_country_table_to_postgres(df_country: DataFrame) -> DataFrame:
+    print("insert country table")
     tz.pipe(
         df_country.copy(),
-        lambda d: d.rename(columns={'region': 'region_id', 'country_txt': 'name'}, inplace=False),
-        lambda d: d.to_dict(orient='records'),
+        lambda df: df.rename(columns={'region': 'region_id', 'country_txt': 'name'}, inplace=False),
+        lambda df: df.to_dict(orient='records'),
         tz.partial(map, lambda x: Country(**x)),
         list,
         lambda di: insert_many_generic(di),
@@ -31,76 +31,77 @@ def insert_country_table_to_postgres(df_country: DataFrame) -> DataFrame:
     return df_country.rename(columns={'id': 'country_id'})
 
 
-# apply_city_id_on_main_csv,
 def insert_city_table_to_postgres(df_city: DataFrame) -> DataFrame:
-    df = df_city.dropna().drop_duplicates(subset="city", keep='first', inplace=False)
+    print("insert city table")
+
     tz.pipe(
-        df.copy(),
+        df_city.copy(),
         lambda d: d.rename(columns={'city': 'name', 'city_id': 'id'}, inplace=False),
         lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: City(**x)),
         list,
         lambda di: insert_many_generic(di),
     )
-    return df
+    return df_city
 
 
-def insert_terror_location_to_postgres(df_terror_location: DataFrame) -> None:
+def insert_terror_location_to_postgres(df_terror_location: DataFrame) -> List[Dict]:
+    print("insert terror_locations table")
     return tz.pipe(
         df_terror_location.dropna().drop_duplicates(subset=["city_id", "longitude", "latitude"], keep='first',
                                                     inplace=False),
         lambda d: d.rename(columns={'terror_location_id': 'id'}, inplace=False), lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: TerrorLocation(**x)),
-        list,
-        lambda di: insert_many_generic(di),
+        list
     )
 
 
-def insert_target_type(target_type_df: DataFrame) -> None:
+def insert_target_type(target_type_df: DataFrame) -> List[Dict]:
+    print("insert target_type table")
     return tz.pipe(
         target_type_df,
         lambda d: d.rename(columns={'target_type_id': 'id'}, inplace=False),
         lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: TargetType(**x)),
-        list,
-        lambda di: insert_many_generic(di),
+        list
     )
 
 
-def insert_group(attack_df: DataFrame) -> None:
+def insert_group(attack_df: DataFrame) -> List[Dict]:
+    print("insert group table")
     return tz.pipe(
         attack_df,
         lambda d: d.rename(columns={'group_id': 'id'}, inplace=False),
         lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: Group(**x)),
-        list,
-        lambda di: insert_many_generic(di),
+        list
     )
 
 
-def insert_nationality(attack_df: DataFrame) -> None:
+def insert_nationality(attack_df: DataFrame) -> List[Dict]:
+    print("insert nationality table")
     return tz.pipe(
         attack_df,
         lambda d: d.rename(columns={'nationality_id': 'id'}, inplace=False),
         lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: Nationality(**x)),
-        list,
-        lambda di: insert_many_generic(di),
+        list
     )
 
 
-def insert_attack_type(attack_type_df: DataFrame) -> None:
+def insert_attack_type(attack_type_df: DataFrame) -> List[Dict]:
+    print("insert attack_type table")
     return tz.pipe(
         attack_type_df,
         lambda d: d.rename(columns={'attack_type_id': 'id'}, inplace=False),
         lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: AttackType(**x)),
-        list,
-        lambda di: insert_many_generic(di),
+        list
     )
 
 
-def insert_terror_attack(terror_attack_df: DataFrame) -> None:
+def insert_terror_attack(terror_attack_df: DataFrame) -> List[Dict]:
+    print("insert terror_attack table")
     terror_attack_df.fillna({"terror_location_id": 0})
     terror_attack_df['terror_location_id'] = terror_attack_df['terror_location_id'].astype(int)
     return tz.pipe(
@@ -109,37 +110,26 @@ def insert_terror_attack(terror_attack_df: DataFrame) -> None:
                                     "terror_attack_id": 'id'}, inplace=False),
         lambda d: d.to_dict(orient='records'),
         tz.partial(map, lambda x: TerrorAttack(**x)),
-        list,
-        lambda di: insert_many_generic(di),
+        list
     )
 
 
 def main_flow_insert_tables():
     init_db()
     df = main_flow_clean_csv()
-    insert_region_table_to_postgres(normalize_region_table(df))
-    print("insert region table")
+    insert_many_generic(prepare_region_list_to_insert(normalize_region_table(df)))
     df_country = insert_country_table_to_postgres(normalize_country_table(df))
-    print("insert country table")
     apply_country_id_on_main_csv(df, df_country)
     df_city = insert_city_table_to_postgres(normalize_city_table(df))
-    print("insert city table")
     apply_city_id_on_main_csv(df, df_city)
-    df["city_id"] = df["city_id"].fillna(3).astype(int)
     terror_locations = normalize_terror_location_table(df)
-    insert_terror_location_to_postgres(terror_locations)
-    print("insert terror_locations table")
+    insert_many_generic(insert_terror_location_to_postgres(terror_locations))
     apply_terror_location_id_on_main_csv(df, terror_locations)
-    insert_attack_type(normalize_attack_type_table(df))
-    print("insert attack_type table")
-    insert_target_type(normalize_target_type_table(df))
-    print("insert target_type table")
-    insert_group(normalize_group_table(df))
-    print("insert group table")
-    insert_nationality(normalize_nationality_table(df))
-    print("insert nationality table")
-    insert_terror_attack(normalize_terror_attack_table(df))
-    print("insert terror_attack table")
+    insert_many_generic(insert_attack_type(normalize_attack_type_table(df)))
+    insert_many_generic(insert_target_type(normalize_target_type_table(df)))
+    insert_many_generic(insert_group(normalize_group_table(df)))
+    insert_many_generic(insert_nationality(normalize_nationality_table(df)))
+    insert_many_generic(insert_terror_attack(normalize_terror_attack_table(df)))
     # create_summery(
     #     from_list_to_actions(
     #         normalize_terror_attack_table(df)[['terror_attack_id', 'summary', 'Date']]

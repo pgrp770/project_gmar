@@ -9,7 +9,15 @@ def normalize_terror_attack_table(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def normalize_region_table(df: pd.DataFrame) -> pd.DataFrame:
-    return create_sub_table(df, ["region", "region_txt"])
+    return (pd.concat(
+        [
+            create_sub_table(df, ["region", "region_txt"]),
+            pd.DataFrame({'region': [0], 'region_txt': ['Unknown']})
+        ], ignore_index=True)
+            .dropna()
+            .drop_duplicates(subset=None, keep='first', inplace=False)
+
+            )
 
 
 def normalize_country_table(df: pd.DataFrame) -> pd.DataFrame:
@@ -27,22 +35,28 @@ def apply_country_id_on_main_csv(df: pd.DataFrame, countries: pd.DataFrame) -> p
 
 
 def normalize_city_table(df: pd.DataFrame) -> pd.DataFrame:
-    return create_sub_table_with_id(df, ["country_id", "city"], "city").drop_duplicates('city')
+    return (create_sub_table_with_id(
+        df,
+        ["country_id", "city"], "city")
+            .dropna()
+            .drop_duplicates(subset="city", keep='first', inplace=False)
+            )
 
 
 def apply_city_id_on_main_csv(df: pd.DataFrame, cities: pd.DataFrame) -> pd.DataFrame:
     map_id_cities = map_id(cities, "city", "city")
-    return add_id_column_to_table_with_map(df, map_id_cities, "city", "city")
+    df_with_id = add_id_column_to_table_with_map(df, map_id_cities, "city", "city")
+    df_with_id["city_id"] = df_with_id["city_id"].fillna(3).astype(int)
+    return df_with_id
 
 
 def normalize_terror_location_table(df: pd.DataFrame) -> pd.DataFrame:
     return (create_sub_table_with_id(df, ["city_id", "latitude", "longitude"], "terror_location")
-                .dropna()
-                .drop_duplicates(
-                subset=["city_id", "longitude", "latitude"],
-                keep='first', inplace=False)
-        )
-
+    .dropna()
+    .drop_duplicates(
+        subset=["city_id", "longitude", "latitude"],
+        keep='first', inplace=False)
+    )
 
 
 def normalize_attack_type_table(df: pd.DataFrame) -> pd.DataFrame:
@@ -93,7 +107,6 @@ def normalize_group_table(df: pd.DataFrame) -> pd.DataFrame:
         ], "name"),
         lambda x: create_ids(x, "group"),
     )
-
 
 
 def apply_terror_location_id_on_main_csv(df: pd.DataFrame, terror_location: pd.DataFrame) -> pd.DataFrame:
