@@ -2,7 +2,6 @@ from typing import List
 import toolz as tz
 
 def from_list_to_actions_with_chunks(index: str, objects: List[dict]) -> List[List[dict]]:
-    breakpoint()
     data = [
         {
             "_index": index,

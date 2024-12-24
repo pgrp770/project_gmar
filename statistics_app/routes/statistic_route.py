@@ -17,15 +17,6 @@ def get_deadliest_attack_endpoint():
 
 
 # e_2
-# @statistic_bluprint.route('/average-casualties-by/<string:target>', methods=['GET'])
-# def get_average_casualties_by_region_endpoint(target):
-#     try:
-#         a = get_average_casualties(target, int(request.args.get('limit', 0)))
-#
-#         return try_one(a).get_root().render() , 200
-#     except Exception as e:
-#         return jsonify({'message': str(e)}), 500
-
 @statistic_bluprint.route('/average-casualties-by/<string:target>', methods=['GET'])
 def get_average_casualties_by_region_endpoint(target):
     try:
@@ -60,7 +51,7 @@ def get_attack_change_percentage_by_region_endpoint():
 @statistic_bluprint.route('/regions/most-active-groups', methods=['GET'])
 def get_most_active_groups_by_region_endpoint():
     try:
-        data = get_most_active_groups_by_region()
+        data = get_most_active_groups_by_region(str(request.args.get('region', None)))
         response = make_response(e_8(data))
         return response
     except Exception as e:

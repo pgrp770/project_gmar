@@ -1,7 +1,7 @@
 import math
 from typing import List, Dict
 from statistics_app.db.sql_db.repostiories.terror_attack_repository import *
-
+import toolz as tz
 
 def first_nonzero(series):
     non_zero_values = series[series != 0]
@@ -13,7 +13,7 @@ def get_deadliest_attack_endpoint_service(limit: int) -> List[Dict]:
     df = get_deadliest_attack()
     df_grouped = df.groupby('attack_type', as_index=False).agg({'casualties': 'sum'})
     df_sorted = df_grouped.sort_values(by='casualties', ascending=False)
-    return df_sorted.head(limit).to_dict('records')
+    return df_sorted.head(limit).to_dict('records') if limit > 0 else df_sorted.to_dict('records')
 
 
 # 2
@@ -37,7 +37,7 @@ def get_top_5_groups_by_attacks():
     df = get_top_5_groups_by_attacks_query()
     group_fatalities = df.groupby('group')['casualties'].sum().reset_index()
     sorted_groups = group_fatalities.sort_values(by='casualties', ascending=False)
-    return sorted_groups.to_dict('records')
+    return sorted_groups.head(5).to_dict('records')
 
 
 # 6
@@ -79,8 +79,10 @@ def get_attack_change_percentage_by_region(limit=0):
 
 
 # 8
-def get_most_active_groups_by_region():
+def get_most_active_groups_by_region(region: str):
     df = get_most_active_groups_by_region_query()
+
+
     group_count = df.groupby(['region', 'group']).size().reset_index(name='count')
     grouped_by_region = group_count.groupby('region').apply(
         lambda x: x.sort_values(by='count', ascending=False).head(5)[['group', 'count']].to_dict('records')
@@ -90,7 +92,11 @@ def get_most_active_groups_by_region():
         longitude=('longitude', 'first')
     ).reset_index()
     result = pd.merge(grouped_by_region, lat_lon, on='region', how='left')
-    return result.to_dict('records')
+    return result.to_dict('records') if region == "None" else tz.pipe(
+                                            result.to_dict('records'),
+        tz.partial(filter, lambda x: x["region"] == region),
+        list
+    )
 
 
 # 11
@@ -164,3 +170,7 @@ def get_similar_goals_timeline_by_group():
                .reset_index())
     same_target_groups = grouped[grouped['groups'].apply(lambda x: len(x) > 1)]
     return same_target_groups.to_dict('records')
+
+
+if __name__ == '__main__':
+    print(get_region_targets_intersection("country"))

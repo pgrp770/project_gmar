@@ -2,7 +2,6 @@ import folium
 
 
 def e_2(data):
-    print("Preparing the HTML map...")
 
     m = folium.Map(location=[20, 0], zoom_start=2)
 
@@ -70,7 +69,7 @@ def e_8(data):
             icon=folium.Icon(color='blue')
         ).add_to(m)
         .add_child(
-            folium.Popup(
+            folium.Popup(f" Region: {row['region']}"
                 '<br>'.join(
                     [
                         f"Group: {group['group']} - Attacks: {group['count']}"
@@ -96,7 +95,7 @@ def e_11(data):
             location=(row['latitude'], row['longitude']),
             radius=5,
             popup=folium.Popup(
-                f"locations: {row[location_type]}, <br>Groups: {', '.join([group for sublist in row['groups'] for group in sublist])}",
+                f"locations: {row[location_type]}, <br>Groups: {row['groups']}",
                 max_width=300
             ),
             color='red',

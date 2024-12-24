@@ -18,4 +18,3 @@ def consume_classes(func: Callable):
 
 if __name__ == '__main__':
     consume_classes(main_flow_news_consumer)
-    # consume_classes(print)

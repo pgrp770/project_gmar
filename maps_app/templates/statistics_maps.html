@@ -68,8 +68,21 @@
     <h3>most_active_groups e_8</h3>
     <div class="iframe-container">
         <div>
-            <p>top 5 regions</p>
-            <iframe src="http://127.0.0.1:5000/api/statistics/regions/most-active-groups"></iframe>
+            <span>regions</span>
+            <input id="region-input" type="text"  placeholder="region"/>
+            <button onclick="setRegionSrc()">Choose</button>
+            <iframe id="region-iframe" src="http://127.0.0.1:5000/api/statistics/regions/most-active-groups"></iframe>
+            <script>
+    const setRegionSrc = () => {
+        const inputValue = document.getElementById("region-input").value;
+        const encodedValue = encodeURIComponent(inputValue); // Encode spaces and special characters
+        const iframe = document.getElementById("region-iframe");
+
+        // Set the iframe's src with the properly encoded region parameter
+        iframe.src = `http://127.0.0.1:5000/api/statistics/regions/most-active-groups?region=${encodedValue}`;
+        console.log(iframe.src);
+    };
+</script>
         </div>
 
     </div>

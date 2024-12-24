@@ -1,13 +1,13 @@
 import numpy as np
 import pytest
-import data_management_app.services.normalize_data_srevices.assets_normalize_data_service as assets
 
+from data_management_app.config.root_dir import CSV_DATA_MAIN_TABLE_SMALL_DATA, CSV_DATA_SECOND_TABLE_SMALL_DATA
 from data_management_app.services.normalize_data_srevices.retype_and_clean_csv_service import *
 
 
 @pytest.fixture(scope='module')
 def table():
-    return main_flow_merging(CSV_DATA_MAIN_TABLE, CSV_DATA_SECOND_TABLE)
+    return main_flow_merging(CSV_DATA_MAIN_TABLE_SMALL_DATA, CSV_DATA_SECOND_TABLE_SMALL_DATA)
 
 
 def test_get_only_necessary_columns(table):
