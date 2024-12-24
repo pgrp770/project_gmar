@@ -3,6 +3,7 @@ from news_analize_app.api.groq_api import post_groq_api
 import toolz as tz
 
 from news_analize_app.db.elastic_db.repositories.generic_functions import create_butch
+from news_analize_app.kafka_producers.data_managment_producer import produce_news
 from news_analize_app.services.elastic_service.butch_service import from_list_to_actions
 from news_analize_app.utils.validation_utils import validate_groq_json, validate_keys
 
@@ -40,6 +41,6 @@ def analyze_all_articles(articles):
 def insert_articles_to_elastic(articles):
     tz.pipe(
         analyze_all_articles(articles),
-        tz.partial(from_list_to_actions, "summeries"),
-        create_butch
+        # tz.partial(from_list_to_actions, "summeries"),
+        produce_news
     )

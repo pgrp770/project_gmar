@@ -1,5 +1,4 @@
 import os
-import time
 
 from dotenv import load_dotenv
 from kafka import KafkaAdminClient
@@ -7,19 +6,8 @@ from kafka.admin import NewTopic
 from kafka.errors import TopicAlreadyExistsError
 
 load_dotenv(verbose=True)
-list_topics = [
-    os.environ['NEO4J_TEACHERS_TOPIC'],
-    os.environ['NEO4J_CLASSES_TOPIC'],
-    os.environ['NEO4J_RELATIONS_TOPIC'],
-    os.environ['POSTGRES_STUDENT_PROFILE_TOPIC'],
-    os.environ['POSTGRES_STUDENT_LIFE_STILE_TOPIC'],
-    os.environ['POSTGRES_STUDENT_PERFORMANCE_TOPIC'],
-    os.environ['POSTGRES_TEACHER_TOPIC'],
-    os.environ['POSTGRES_CLASSES_TOPIC'],
-    os.environ['CLASSES_TOPIC'],
-    os.environ['TEACHER_TOPIC'],
-    os.environ['ELASTIC_TOPIC']
-]
+news_topic = os.environ['NEWS_TOPIC']
+
 
 def create_topic(topic_name):
     client = KafkaAdminClient(bootstrap_servers=os.environ['BOOTSTRAP_SERVERS'])
@@ -35,9 +23,10 @@ def create_topic(topic_name):
         print(e)
     finally:
         client.close()
+
+
 def init_topics():
-    for topic in list_topics:
-        create_topic(topic)
+    create_topic(news_topic)
 
 
 if __name__ == '__main__':

@@ -1,12 +1,13 @@
 import json
 import os
+from collections.abc import Callable
 from types import FunctionType
 from dotenv import load_dotenv
 from kafka import KafkaConsumer
 
 load_dotenv(verbose=True)
 
-def consume(topic: str, function: FunctionType ,mode='latest'):
+def consume(topic: str, function: Callable ,mode='latest'):
     print(f"consumer listening to {topic}:")
     consumer = KafkaConsumer(
         topic,
