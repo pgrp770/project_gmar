@@ -32,19 +32,15 @@ def fetch_articles(api_key, keyword, articles_page=1, articles_count=100):
         return None
 
 
-def main_flow():
+def main_flow(articles_count: int = 100, time_sleep: int = 120):
     api_key = "7e31d163-3a72-434f-a25b-41ec53fb5e92"
     keyword = "terror attack"
     articles_page = 1
-    articles_count = 2
+    articles_count = articles_count
 
     while True:
-        print(f"send 2 articles")
+        print(f"send {articles_count} articles")
         data = fetch_articles(api_key, keyword, articles_page, articles_count)
         insert_articles_to_elastic(data['articles']['results'])
         articles_page += 1
-        time.sleep(5)
-
-
-if __name__ == '__main__':
-    main_flow()
+        time.sleep(time_sleep)

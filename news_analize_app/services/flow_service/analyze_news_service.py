@@ -40,6 +40,6 @@ def analyze_all_articles(articles):
 def insert_articles_to_elastic(articles):
     tz.pipe(
         analyze_all_articles(articles),
-        from_list_to_actions,
+        tz.partial(from_list_to_actions, "summeries"),
         create_butch
     )
