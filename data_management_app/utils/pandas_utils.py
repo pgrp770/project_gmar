@@ -7,11 +7,7 @@ def read_from_csv_to_df(path: str) -> pd.DataFrame:
     return pd.read_csv(path, encoding="latin1")
 
 
-def remove_row_by_empty_columns(empty_columns: List[str], df) -> pd.DataFrame:
-    return df.dropna(subset=empty_columns, how='any')
-
-
-def fill_empty_cells(fillna_dict: Dict, df):
+def fill_empty_cells(fillna_dict: Dict, df: pd.DataFrame) -> pd.DataFrame:
     return df.fillna(fillna_dict)
 
 
@@ -50,7 +46,7 @@ def add_id_columns_to_table_with_map(df: pd.DataFrame, map_ids: Dict, keys: List
     return df
 
 
-def combine_columns(df, columns, new_column_name):
+def combine_columns(df: pd.DataFrame, columns: List, new_column_name:str) -> pd.DataFrame:
     melted = pd.melt(df, value_vars=columns, value_name=new_column_name)
     return pd.DataFrame(
         melted[new_column_name]
